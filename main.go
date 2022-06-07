@@ -11,6 +11,12 @@ import (
 	"github.com/uptrace/bun/extra/bundebug"
 )
 
+type pokemonSQLop struct {
+	ctx        context.Context
+	db         *bun.DB
+	modelToUse *pokemon
+}
+
 type pokemon struct {
 	ID          int64 `bun:",pk,autoincrement"`
 	Name        string
@@ -22,12 +28,33 @@ type pokemon struct {
 
 type pokemonType string
 
-var pokemon1 = pokemon{Name: "chamander", Description: "fire lizrd", Category: "fire", Type: fire, Abilities: []string{"fire ball", "fly"}}
-var pokemon2 = pokemon{Name: "Pikacu", Description: "lighting", Category: "lighting", Type: lighting, Abilities: []string{"run", "lighting bolt"}}
+type pokemonUpdateInput struct {
+	Name        string
+	Description string
+	Category    string
+	Type        pokemonType
+	Abilities   []string
+}
 
 const (
+	bug      pokemonType = "bug"
+	dark     pokemonType = "dark"
+	dragon   pokemonType = "dragon"
+	electric pokemonType = "lighting"
+	fairy    pokemonType = "fairy"
+	fighting pokemonType = "fighting"
 	fire     pokemonType = "fire"
-	lighting pokemonType = "lighting"
+	flying   pokemonType = "flying"
+	ghost    pokemonType = "ghost"
+	grass    pokemonType = "grass"
+	ground   pokemonType = "ground"
+	ice      pokemonType = "ice"
+	normal   pokemonType = "normal"
+	poison   pokemonType = "poison"
+	psychic  pokemonType = "psychic"
+	rock     pokemonType = "rock"
+	steel    pokemonType = "steel"
+	water    pokemonType = "water"
 )
 
 func errCheck(err error) {
@@ -36,46 +63,8 @@ func errCheck(err error) {
 	}
 }
 
-func createTable(ctx context.Context, db *bun.DB, model *pokemon) {
-	_, err := db.NewCreateTable().Model((*pokemon)(nil)).Exec(ctx)
-	errCheck(err)
-}
-
-func pokeCreate(ctx context.Context, db *bun.DB, model *pokemon) {
-	_, err := db.NewInsert().Model(model).Exec(ctx)
-	errCheck(err)
-}
-
-func pokeUpdate(ctx context.Context, db *bun.DB, model *pokemon) {
-	_, err := db.NewUpdate().Model(model).Where("Name LIKE 'Pikacu'").Exec(ctx)
-	errCheck(err)
-}
-
-func pokeDelete(ctx context.Context, db *bun.DB, model *pokemon) {
-	_, err := db.NewDelete().Model(model).Where("Name LIKE 'Pikacu'").Exec(ctx)
-	errCheck(err)
-}
-
-func pokeList(ctx context.Context, db *bun.DB, model *[]pokemon) {
-	err := db.NewSelect().Model(model).Scan(ctx, model)
-	errCheck(err)
-	fmt.Printf("All Pokemon: %v\n\n", *model)
-}
-
-func pokeFindID(ctx context.Context, db *bun.DB, model *pokemon, ID int) {
-	err := db.NewSelect().Model(model).Where("id = ?", ID).Scan(ctx, model)
-	errCheck(err)
-	fmt.Printf("Pokemon by ID: %v\n\n", *model)
-}
-
-func pokeFindName(ctx context.Context, db *bun.DB, model *pokemon, Name string) {
-	err := db.NewSelect().Model(model).Where("Name = ?", Name).Scan(ctx, model)
-	errCheck(err)
-	fmt.Printf("Pokemon by name: %v\n\n", *model)
-}
-
-func main() {
-	sqldb, err := sql.Open(sqliteshim.ShimName, "sql.DB")
+func (op *pokemonSQLop) init(dbName string) {
+	sqldb, err := sql.Open(sqliteshim.ShimName, dbName)
 	errCheck(err)
 	db := bun.NewDB(sqldb, sqlitedialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(
@@ -84,11 +73,58 @@ func main() {
 	))
 	ctx := context.Background()
 	modelToUse := new(pokemon)
+	op.db = db
+	op.ctx = ctx
+	op.modelToUse = modelToUse
+}
 
-	// pokeCreate(ctx, db, &pokemon1)
-	// pokeUpdate(ctx, db, &pokemon2)
-	// pokeDelete(ctx, db, &pokemon1)
-	// pokeList(ctx, db, modelToUse)
-	// pokeFindID(ctx, db, modelToUse, 2)
-	pokeFindName(ctx, db, modelToUse, "Pikacu")
+func (op *pokemonSQLop) createTable() {
+	_, err := op.db.NewCreateTable().Model((*pokemon)(nil)).Exec(op.ctx)
+	errCheck(err)
+}
+
+func (op *pokemonSQLop) pokeCreate(name string, description string, category string, pokeType pokemonType, abilities []string) {
+	pokemonTobeAdd := pokemon{Name: name, Description: description, Category: category, Type: pokeType, Abilities: abilities}
+	_, err := op.db.NewInsert().Model(&pokemonTobeAdd).Exec(op.ctx)
+	errCheck(err)
+}
+
+func (op *pokemonSQLop) pokeUpdate(name string, updateField string, updateVal string) {
+	_, err := op.db.NewUpdate().Model(op.modelToUse).Set("?= ?", updateField, updateVal).Where("Name = ?", name).Exec(op.ctx)
+	errCheck(err)
+}
+
+func (op *pokemonSQLop) pokeDelete(name string) {
+	_, err := op.db.NewDelete().Model(op.modelToUse).Where("Name = ?", name).Exec(op.ctx)
+	errCheck(err)
+}
+
+func (op *pokemonSQLop) pokeList() {
+	arrModel := new([]pokemon)
+	err := op.db.NewSelect().Model(arrModel).Scan(op.ctx, arrModel)
+	errCheck(err)
+	fmt.Printf("All Pokemon: %v\n\n", *arrModel)
+}
+
+func (op *pokemonSQLop) pokeFindID(ID int) {
+	err := op.db.NewSelect().Model(op.modelToUse).Where("id = ?", ID).Scan(op.ctx, op.modelToUse)
+	errCheck(err)
+	fmt.Printf("Pokemon by ID: %v\n\n", *op.modelToUse)
+}
+
+func (op *pokemonSQLop) pokeFindName(Name string) {
+	err := op.db.NewSelect().Model(op.modelToUse).Where("Name = ?", Name).Scan(op.ctx, op.modelToUse)
+	errCheck(err)
+	fmt.Printf("Pokemon by name: %v\n\n", *op.modelToUse)
+}
+
+func main() {
+	operator := new(pokemonSQLop)
+	operator.init("sql.DB")
+	// operator.pokeCreate("Pikacu", "rat", "atk", electric, []string{"run", "lighting bolt"})
+	// operator.pokeDelete("Pikacu")
+	// operator.pokeUpdate("Pikacu", "description", "ha ha i update you")
+	// operator.pokeList()
+	// operator.pokeFindID(2)
+	operator.pokeFindName("Pikacu")
 }
