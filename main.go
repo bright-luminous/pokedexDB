@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
@@ -21,8 +22,8 @@ type pokemon struct {
 
 type pokemonType string
 
-var pokemon1 = pokemon{Name: "Pikacu", Description: "lighting rat", Category: "lighting", Type: fire, Abilities: []string{"run", "lighting bolt"}}
-var pokemon2 = pokemon{Name: "Pikacu", Description: "lighting", Category: "lighting", Type: "animal", Abilities: []string{"run", "lighting bolt"}}
+var pokemon1 = pokemon{Name: "chamander", Description: "fire lizrd", Category: "fire", Type: fire, Abilities: []string{"fire ball", "fly"}}
+var pokemon2 = pokemon{Name: "Pikacu", Description: "lighting", Category: "lighting", Type: lighting, Abilities: []string{"run", "lighting bolt"}}
 
 const (
 	fire     pokemonType = "fire"
@@ -55,38 +56,39 @@ func pokeDelete(ctx context.Context, db *bun.DB, model *pokemon) {
 	errCheck(err)
 }
 
-func pokeList(ctx context.Context, db *bun.DB, model *pokemon, query string) {
-	rows, err := db.QueryContext(ctx, "SELECT * FROM pokemons")
-	if err != nil {
-		panic(err)
-	}
-	db.ScanRow(ctx, rows)
-
-	// err = db.ScanRows(ctx, rows, &model)
+func pokeList(ctx context.Context, db *bun.DB, model *[]pokemon) {
+	err := db.NewSelect().Model(model).Scan(ctx, model)
+	errCheck(err)
+	fmt.Printf("All Pokemon: %v\n\n", *model)
 }
 
-func pokeFindID() {
-
+func pokeFindID(ctx context.Context, db *bun.DB, model *pokemon, ID int) {
+	err := db.NewSelect().Model(model).Where("id = ?", ID).Scan(ctx, model)
+	errCheck(err)
+	fmt.Printf("Pokemon by ID: %v\n\n", *model)
 }
 
-func pokeFindName() {
-
+func pokeFindName(ctx context.Context, db *bun.DB, model *pokemon, Name string) {
+	err := db.NewSelect().Model(model).Where("Name = ?", Name).Scan(ctx, model)
+	errCheck(err)
+	fmt.Printf("Pokemon by name: %v\n\n", *model)
 }
 
 func main() {
 	sqldb, err := sql.Open(sqliteshim.ShimName, "sql.DB")
-	if err != nil {
-		panic(err)
-	}
+	errCheck(err)
 	db := bun.NewDB(sqldb, sqlitedialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(
 		bundebug.WithVerbose(true),
 		bundebug.FromEnv("BUNDEBUG"),
 	))
-	ctx := context.TODO()
+	ctx := context.Background()
+	modelToUse := new(pokemon)
 
 	// pokeCreate(ctx, db, &pokemon1)
 	// pokeUpdate(ctx, db, &pokemon2)
 	// pokeDelete(ctx, db, &pokemon1)
-	pokeList(ctx, db, &pokemon1, "")
+	// pokeList(ctx, db, modelToUse)
+	// pokeFindID(ctx, db, modelToUse, 2)
+	pokeFindName(ctx, db, modelToUse, "Pikacu")
 }
