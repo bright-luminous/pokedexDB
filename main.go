@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
@@ -12,7 +13,6 @@ import (
 )
 
 type pokemonSQLop struct {
-	ctx        context.Context
 	db         *bun.DB
 	modelToUse *pokemon
 }
@@ -59,7 +59,7 @@ const (
 
 func errCheck(err error) {
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
 
@@ -71,60 +71,65 @@ func (op *pokemonSQLop) init(dbName string) {
 		bundebug.WithVerbose(true),
 		bundebug.FromEnv("BUNDEBUG"),
 	))
-	ctx := context.Background()
 	modelToUse := new(pokemon)
 	op.db = db
-	op.ctx = ctx
 	op.modelToUse = modelToUse
 }
 
-func (op *pokemonSQLop) createTable() {
-	_, err := op.db.NewCreateTable().Model((*pokemon)(nil)).Exec(op.ctx)
-	errCheck(err)
+func (op *pokemonSQLop) createTable(ctx context.Context) (sql.Result, error) {
+	sqlResult, err := op.db.NewCreateTable().Model((*pokemon)(nil)).Exec(ctx)
+	return sqlResult, err
 }
 
-func (op *pokemonSQLop) pokeCreate(name string, description string, category string, pokeType pokemonType, abilities []string) {
-	pokemonTobeAdd := pokemon{Name: name, Description: description, Category: category, Type: pokeType, Abilities: abilities}
-	_, err := op.db.NewInsert().Model(&pokemonTobeAdd).Exec(op.ctx)
-	errCheck(err)
+func (op *pokemonSQLop) pokeCreate(ctx context.Context, name string, description string, category string, pokeType pokemonType, abilities []string) (pokemon, error) {
+	pokemonTobeAdd := pokemon{
+		Name:        name,
+		Description: description,
+		Category:    category,
+		Type:        pokeType,
+		Abilities:   abilities}
+	_, err := op.db.NewInsert().Model(&pokemonTobeAdd).Exec(ctx)
+	return pokemonTobeAdd, err
 }
 
-func (op *pokemonSQLop) pokeUpdate(name string, updateField string, updateVal string) {
-	_, err := op.db.NewUpdate().Model(op.modelToUse).Set("?= ?", updateField, updateVal).Where("Name = ?", name).Exec(op.ctx)
-	errCheck(err)
+func (op *pokemonSQLop) pokeUpdate(ctx context.Context, name string, updateField string, updateVal string) (pokemon, error) {
+	_, err := op.db.NewUpdate().Model(op.modelToUse).Set("?= ?", updateField, updateVal).Where("Name = ?", name).Exec(ctx)
+	return *op.modelToUse, err
 }
 
-func (op *pokemonSQLop) pokeDelete(name string) {
-	_, err := op.db.NewDelete().Model(op.modelToUse).Where("Name = ?", name).Exec(op.ctx)
-	errCheck(err)
+func (op *pokemonSQLop) pokeDelete(ctx context.Context, name string) (pokemon, error) {
+	_, err := op.db.NewDelete().Model(op.modelToUse).Where("Name = ?", name).Exec(ctx)
+	return *op.modelToUse, err
 }
 
-func (op *pokemonSQLop) pokeList() {
+func (op *pokemonSQLop) pokeList(ctx context.Context) ([]pokemon, error) {
 	arrModel := new([]pokemon)
-	err := op.db.NewSelect().Model(arrModel).Scan(op.ctx, arrModel)
-	errCheck(err)
-	fmt.Printf("All Pokemon: %v\n\n", *arrModel)
+	err := op.db.NewSelect().Model(arrModel).Scan(ctx, arrModel)
+	return *arrModel, err
 }
 
-func (op *pokemonSQLop) pokeFindID(ID int) {
-	err := op.db.NewSelect().Model(op.modelToUse).Where("id = ?", ID).Scan(op.ctx, op.modelToUse)
+func (op *pokemonSQLop) pokeFindID(ctx context.Context, ID int) ([]pokemon, error) {
+	arrModel := new([]pokemon)
+	err := op.db.NewSelect().Model(op.modelToUse).Where("id = ?", ID).Scan(ctx, arrModel)
 	errCheck(err)
-	fmt.Printf("Pokemon by ID: %v\n\n", *op.modelToUse)
+	return *arrModel, err
 }
 
-func (op *pokemonSQLop) pokeFindName(Name string) {
-	err := op.db.NewSelect().Model(op.modelToUse).Where("Name = ?", Name).Scan(op.ctx, op.modelToUse)
+func (op *pokemonSQLop) pokeFindName(ctx context.Context, Name string) ([]pokemon, error) {
+	arrModel := new([]pokemon)
+	err := op.db.NewSelect().Model(op.modelToUse).Where("Name = ?", Name).Scan(ctx, arrModel)
 	errCheck(err)
-	fmt.Printf("Pokemon by name: %v\n\n", *op.modelToUse)
+	return *arrModel, err
 }
 
 func main() {
 	operator := new(pokemonSQLop)
 	operator.init("sql.DB")
-	// operator.pokeCreate("Pikacu", "rat", "atk", electric, []string{"run", "lighting bolt"})
-	// operator.pokeDelete("Pikacu")
-	// operator.pokeUpdate("Pikacu", "description", "ha ha i update you")
-	// operator.pokeList()
-	// operator.pokeFindID(2)
-	operator.pokeFindName("Pikacu")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	toPrint, err := operator.pokeFindName(ctx, "Chamander")
+	errCheck(err)
+	fmt.Printf("Pokemon by name: %v\n\n", toPrint)
 }
