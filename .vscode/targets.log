@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Wed Jun  8 09:55:23 2022
+# Make data base, printed on Wed Jun  8 13:19:15 2022
 
 # Variables
 
@@ -25,7 +25,7 @@ SNAP_INSTANCE_KEY =
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-39ea0d44-22eb-4726-9bbc-2a8070c01ad0.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-6c61aa3a-3d67-4948-965e-5bc0de57fcf2.sock
 # environment
 LC_NAME = th_TH.UTF-8
 # environment
@@ -38,6 +38,8 @@ LC_ADDRESS = th_TH.UTF-8
 MAKE_COMMAND := make
 # environment
 QT_ACCESSIBILITY = 1
+# environment
+GOPATH = /home/phirun/go
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # environment
@@ -65,7 +67,7 @@ VSCODE_CODE_CACHE_PATH = /home/phirun/.config/Code/CachedData/c3511e6c69bb39013c
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.XAJ4M1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.WX8HN1
 # default
 .LOADED := 
 # default
@@ -105,7 +107,7 @@ SNAP_REEXEC =
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 6446
+VSCODE_PID = 2819
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -113,7 +115,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/phirun-VirtualBox:@/tmp/.ICE-unix/1929,unix/phirun-VirtualBox:/tmp/.ICE-unix/1929
+SESSION_MANAGER = local/phirun-VirtualBox:@/tmp/.ICE-unix/1799,unix/phirun-VirtualBox:/tmp/.ICE-unix/1799
 # automatic
 *F = $(notdir $*)
 # environment
@@ -161,7 +163,7 @@ LC_TIME = th_TH.UTF-8
 # environment
 SNAP = /snap/code/97
 # environment
-INVOCATION_ID = 71cbb43b8fd0484093690ae2e6d809ae
+INVOCATION_ID = 214790550c89496da21a22ec5797fc01
 # environment
 SNAP_REVISION = 97
 # environment
@@ -199,7 +201,7 @@ SNAP_ARCH = amd64
 # makefile
 .DEFAULT_GOAL := run
 # environment
-SYSTEMD_EXEC_PID = 1969
+SYSTEMD_EXEC_PID = 1823
 # environment
 DISPLAY = :0
 # environment
@@ -215,11 +217,11 @@ SNAP_DATA = /var/snap/code/97
 # environment
 SNAP_CONTEXT = ulez_xSVBNez6ShiJTAQ92DppMRAuH846zK6YqrnKYu9PEtmCI8A
 # environment
-MANAGERPID = 1786
+MANAGERPID = 1660
 # environment
 LC_MEASUREMENT = th_TH.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 6401
+GIO_LAUNCHED_DESKTOP_FILE_PID = 2770
 # environment
 _ = /snap/code/97/usr/share/code/code
 # environment
@@ -229,7 +231,9 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/phirun/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:22251
+JOURNAL_STREAM = 8:25373
+# environment
+GOMODCACHE = /home/phirun/go/pkg/mod
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -248,6 +252,8 @@ SNAP_NAME = code
 GSETTINGS_SCHEMA_DIR = /snap/code/97/usr/share/glib-2.0/schemas
 # environment
 IM_CONFIG_PHASE = 1
+# environment
+GOPROXY = https://proxy.golang.org,direct
 # default
 .RECIPEPREFIX := 
 # automatic
@@ -275,19 +281,18 @@ LC_IDENTIFICATION = th_TH.UTF-8
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
 # variable set hash-table stats:
-# Load=131/1024=13%, Rehash=0, Collisions=5/161=3%
+ 
+# Load=134/1024=13%, Rehash=0, Collisions=6/164=4%
 
 # Pattern-specific Variable Values
 
 # No pattern-specific variable values.
- 
 
 # Directories
 
- 
-# . (device 2051, inode 2497303): 15 files, no impossibilities.
+# . (device 2051, inode 2497303): 14 files, no impossibilities.
 
-# 15 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -298,8 +303,7 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
- 
-#  Last modified 2022-06-08 08:43:31.476085143
+#  Last modified 2022-06-08 13:14:50.160494282
 #  File has been updated.
 #  Successfully updated.
 
@@ -328,8 +332,7 @@ main:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 5):
-	go run main.go main_func.go main_struct.go
- 
+	go run server.go main_func.go main_struct.go
 
 test:
 #  Implicit rule search has not been done.
@@ -346,12 +349,12 @@ test:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 193 B / avg = 8 B
-# current buf: size = 8162 B / used = 193 B / count = 23 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 22 / storage = 174 B / avg = 7 B
+# current buf: size = 8162 B / used = 174 B / count = 22 / avg = 7 B
 
-# strcache performance: lookups = 30 / hit rate = 23%
+# strcache performance: lookups = 29 / hit rate = 24%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=0/30=0%
-# Finished Make data base on Wed Jun  8 09:55:23 2022
+# Load=22/8192=0%, Rehash=0, Collisions=0/29=0%
+# Finished Make data base on Wed Jun  8 13:19:15 2022
 
  

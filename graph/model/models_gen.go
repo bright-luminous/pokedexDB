@@ -2,19 +2,30 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type DeleteIDInput struct {
+	ID string `json:"ID"`
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type Pokemon struct {
+	ID          string   `json:"ID"`
+	Name        string   `json:"Name"`
+	Description string   `json:"Description"`
+	Category    string   `json:"Category"`
+	Type        string   `json:"Type"`
+	Abilities   []string `json:"Abilities"`
 }
 
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type PokemonCreateInput struct {
+	ID          *string  `json:"ID"`
+	Name        string   `json:"Name"`
+	Description string   `json:"Description"`
+	Category    string   `json:"Category"`
+	Type        string   `json:"Type"`
+	Abilities   []string `json:"Abilities"`
+}
+
+type PokemonUpdateInput struct {
+	ID        string `json:"ID"`
+	UpdateKey string `json:"UpdateKey"`
+	UpdateVal string `json:"UpdateVal"`
 }

@@ -9,13 +9,58 @@ import (
 
 	"github.com/bright-luminous/pokedexDB/graph/generated"
 	"github.com/bright-luminous/pokedexDB/graph/model"
+	"github.com/bright-luminous/pokedexDB/resource"
 )
 
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+func (r *mutationResolver) CreatePokemon(ctx context.Context, input model.PokemonCreateInput) (*model.Pokemon, error) {
+	if input.ID != nil {
+		return nil, fmt.Errorf("id must be null")
+	}
+	result, err := r.DB.PokeCreate(ctx, input.Name, input.Description, input.Category, resource.PokemonType(input.Type), input.Abilities)
+	pokeToReturn := model.Pokemon{
+		ID:          result.ID,
+		Name:        result.Name,
+		Description: result.Description,
+		Category:    result.Category,
+		Type:        string(result.Type),
+		Abilities:   result.Abilities,
+	}
+	return &pokeToReturn, err
+}
+
+func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.PokemonUpdateInput) ([]*model.Pokemon, error) {
+	result, err := r.DB.PokeUpdate(ctx, input.ID, input.UpdateKey, input.UpdateVal)
+	var pokeToReturn []*model.Pokemon
+	for _, v := range result {
+		pokeToAppend := model.Pokemon{
+			Name:        v.Name,
+			Description: v.Description,
+			Category:    v.Category,
+			Type:        string(v.Type),
+			Abilities:   v.Abilities,
+		}
+		pokeToReturn = append(pokeToReturn, &pokeToAppend)
+	}
+	return pokeToReturn, err
+}
+
+func (r *mutationResolver) DeletePokemon(ctx context.Context, input model.DeleteIDInput) ([]*model.Pokemon, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+func (r *mutationResolver) DeleteAllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) ListAllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) QueryPokemonID(ctx context.Context, input string) ([]*model.Pokemon, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) QueryPokemonName(ctx context.Context, input string) ([]*model.Pokemon, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 
