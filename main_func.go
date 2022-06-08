@@ -78,6 +78,15 @@ func (op *pokemonSQLop) pokeFindName(ctx context.Context, Name string) ([]pokemo
 	return *arrModel, err
 }
 
+func (op *pokemonSQLop) pokeDeleteAll(ctx context.Context) {
+	pokeArr, err := op.pokeList(ctx)
+	errCheck(err)
+	for _, v := range pokeArr {
+		_, err := op.pokeDelete(ctx, int(v.ID))
+		errCheck(err)
+	}
+}
+
 func Add(a int, b int) int {
 	return a + b
 }

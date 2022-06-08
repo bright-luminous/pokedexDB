@@ -13,9 +13,7 @@ func main() {
 	if cancel != nil {
 		fmt.Printf("Context cancel msg : %v\n\n", cancel)
 	}
-	toPrint, err := operator.pokeDelete(ctx, 3)
-	errCheck(err)
-	fmt.Printf("Pokemon by name: %v\n\n", toPrint)
+	operator.pokeDeleteAll(ctx)
 }
 
 // test push

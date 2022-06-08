@@ -91,4 +91,7 @@ func TestOpFunc(t *testing.T) {
 	nameResult, err := operator.pokeFindName(ctx, "chic")
 	assert.Equal(t, []pokemon{myPokemon[2]}, nameResult)
 	assert.Equal(t, nil, err)
+
+	//clear the DB
+	operator.pokeDeleteAll(ctx)
 }

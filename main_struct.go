@@ -18,13 +18,13 @@ type pokemon struct {
 
 type pokemonType string
 
-type pokemonUpdateInput struct {
-	Name        string
-	Description string
-	Category    string
-	Type        pokemonType
-	Abilities   []string
-}
+// type pokemonUpdateInput struct {
+// 	Name        string
+// 	Description string
+// 	Category    string
+// 	Type        pokemonType
+// 	Abilities   []string
+// }
 
 const (
 	bug      pokemonType = "bug"
