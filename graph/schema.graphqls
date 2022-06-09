@@ -7,8 +7,28 @@ type Pokemon {
 	Name: String!
 	Description: String!
 	Category: String!
-	Type: String!
+	Type: pokemonType!
 	Abilities: [String!]!
+}
+enum pokemonType {
+	Bug
+	Dark
+	Dragon
+	Electric
+	Fairy
+	Fighting
+	Fire
+	Flying
+	Ghost
+	Grass
+	Ground
+	Ice
+	Normal
+	Poison
+	Psychic
+	Rock
+	Steel
+	Water
 }
 
 input PokemonCreateInput {
@@ -16,7 +36,7 @@ input PokemonCreateInput {
 	Name: String!
 	Description: String!
 	Category: String!
-	Type: String!
+	Type: pokemonType!
 	Abilities: [String!]!
 }
 
@@ -31,7 +51,7 @@ input PokemonMapUpdateInput {
 	Name: String!
 	Description: String!
 	Category: String!
-	Type: String!
+	Type: pokemonType!
 	Abilities: [String!]!
 }
 

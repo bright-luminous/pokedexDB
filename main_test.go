@@ -6,18 +6,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/bright-luminous/pokedexDB/graph/model"
 	"github.com/bright-luminous/pokedexDB/resource"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestOpFunc(t *testing.T) {
-	myPokemon := []resource.Pokemon{
+	myPokemon := []model.Pokemon{
 		{
 			ID:          "1",
 			Name:        "phum",
 			Description: "look like pola bare",
 			Category:    "infar",
-			Type:        resource.Fairy,
+			Type:        model.PokemonTypeDragon,
 			Abilities:   []string{"drink coffee"},
 		},
 		{
@@ -25,7 +26,7 @@ func TestOpFunc(t *testing.T) {
 			Name:        "fone",
 			Description: "have her own keyboard",
 			Category:    "frontend",
-			Type:        resource.Ghost,
+			Type:        model.PokemonTypeGhost,
 			Abilities:   []string{"red screen"},
 		},
 		{
@@ -33,7 +34,7 @@ func TestOpFunc(t *testing.T) {
 			Name:        "chic",
 			Description: "have Ipad never use it",
 			Category:    "backend",
-			Type:        resource.Flying,
+			Type:        model.PokemonTypeGrass,
 			Abilities:   []string{"driving"},
 		},
 	}
@@ -60,13 +61,13 @@ func TestOpFunc(t *testing.T) {
 
 	//update pokemon
 	updatedPokemon, err := operator.PokeUpdate(ctx, "1", "Description", "maybe look like whale")
-	afterUpdatePokemon := []resource.Pokemon{
+	afterUpdatePokemon := []model.Pokemon{
 		{
 			ID:          "1",
 			Name:        "phum",
 			Description: "maybe look like whale",
 			Category:    "infar",
-			Type:        resource.Fairy,
+			Type:        model.PokemonTypeBug,
 			Abilities:   []string{"drink coffee"},
 		},
 	}
@@ -81,22 +82,22 @@ func TestOpFunc(t *testing.T) {
 
 	//delete pokemon
 	deletedPokemon, err := operator.PokeDelete(ctx, "1")
-	assert.Equal(t, []resource.Pokemon(nil), deletedPokemon)
+	assert.Equal(t, []model.Pokemon(nil), deletedPokemon)
 	assert.Equal(t, nil, err)
 
 	//list all pokemon
 	listResult, err = operator.PokeList(ctx)
-	assert.Equal(t, []resource.Pokemon{myPokemon[1], myPokemon[2]}, listResult)
+	assert.Equal(t, []model.Pokemon{myPokemon[1], myPokemon[2]}, listResult)
 	assert.Equal(t, nil, err)
 
 	//list ID pokemon
 	idResult, err := operator.PokeFindID(ctx, "2")
-	assert.Equal(t, []resource.Pokemon{myPokemon[1]}, idResult)
+	assert.Equal(t, []model.Pokemon{myPokemon[1]}, idResult)
 	assert.Equal(t, nil, err)
 
 	//list name pokemon
 	nameResult, err := operator.PokeFindName(ctx, "chic")
-	assert.Equal(t, []resource.Pokemon{myPokemon[2]}, nameResult)
+	assert.Equal(t, []model.Pokemon{myPokemon[2]}, nameResult)
 	assert.Equal(t, nil, err)
 
 	//clear the DB

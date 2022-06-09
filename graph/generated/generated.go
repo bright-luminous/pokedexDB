@@ -304,8 +304,28 @@ type Pokemon {
 	Name: String!
 	Description: String!
 	Category: String!
-	Type: String!
+	Type: pokemonType!
 	Abilities: [String!]!
+}
+enum pokemonType {
+	Bug
+	Dark
+	Dragon
+	Electric
+	Fairy
+	Fighting
+	Fire
+	Flying
+	Ghost
+	Grass
+	Ground
+	Ice
+	Normal
+	Poison
+	Psychic
+	Rock
+	Steel
+	Water
 }
 
 input PokemonCreateInput {
@@ -313,7 +333,7 @@ input PokemonCreateInput {
 	Name: String!
 	Description: String!
 	Category: String!
-	Type: String!
+	Type: pokemonType!
 	Abilities: [String!]!
 }
 
@@ -328,7 +348,7 @@ input PokemonMapUpdateInput {
 	Name: String!
 	Description: String!
 	Category: String!
-	Type: String!
+	Type: pokemonType!
 	Abilities: [String!]!
 }
 
@@ -1024,9 +1044,9 @@ func (ec *executionContext) _Pokemon_Type(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(model.PokemonType)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNpokemonType2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Pokemon_Type(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1036,7 +1056,7 @@ func (ec *executionContext) fieldContext_Pokemon_Type(ctx context.Context, field
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type pokemonType does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3243,7 +3263,7 @@ func (ec *executionContext) unmarshalInputPokemonCreateInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			it.Type, err = ec.unmarshalNpokemonType2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3306,7 +3326,7 @@ func (ec *executionContext) unmarshalInputPokemonMapUpdateInput(ctx context.Cont
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Type"))
-			it.Type, err = ec.unmarshalNString2string(ctx, v)
+			it.Type, err = ec.unmarshalNpokemonType2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4279,6 +4299,16 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNpokemonType2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonType(ctx context.Context, v interface{}) (model.PokemonType, error) {
+	var res model.PokemonType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNpokemonType2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonType(ctx context.Context, sel ast.SelectionSet, v model.PokemonType) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {

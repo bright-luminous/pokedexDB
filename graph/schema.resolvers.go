@@ -16,50 +16,50 @@ func (r *mutationResolver) CreatePokemon(ctx context.Context, input model.Pokemo
 	if input.ID != nil {
 		return nil, fmt.Errorf("id must be null")
 	}
-	result, err := r.DB.PokeCreate(ctx, input.Name, input.Description, input.Category, resource.PokemonType(input.Type), input.Abilities)
-	pokeToReturn := resource.ResourceToModel([]resource.Pokemon{result})
-	return pokeToReturn[0], err
+	result, err := r.DB.PokeCreate(ctx, input.Name, input.Description, input.Category, input.Type, input.Abilities)
+	pokeToReturn := []model.Pokemon{result}
+	return &pokeToReturn[0], err
 }
 
 func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.PokemonUpdateInput) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeUpdate(ctx, input.ID, input.UpdateKey, input.UpdateVal)
-	pokeToReturn := resource.ResourceToModel(result)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *mutationResolver) UpdatePokemonMap(ctx context.Context, input model.PokemonMapUpdateInput) ([]*model.Pokemon, error) {
-	result, err := r.DB.PokeUpdateMulti(ctx, input.ID, input.Name, input.Description, input.Category, resource.PokemonType(input.Type), input.Abilities)
-	pokeToReturn := resource.ResourceToModel(result)
+	result, err := r.DB.PokeUpdateMulti(ctx, input.ID, input.Name, input.Description, input.Category, input.Type, input.Abilities)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *mutationResolver) DeletePokemon(ctx context.Context, input model.DeleteIDInput) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeDelete(ctx, input.ID)
-	pokeToReturn := resource.ResourceToModel(result)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *mutationResolver) DeleteAllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeDeleteAll(ctx)
-	pokeToReturn := resource.ResourceToModel(result)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *queryResolver) ListAllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeList(ctx)
-	pokeToReturn := resource.ResourceToModel(result)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *queryResolver) QueryPokemonID(ctx context.Context, input string) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeFindID(ctx, input)
-	pokeToReturn := resource.ResourceToModel(result)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *queryResolver) QueryPokemonName(ctx context.Context, input string) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeFindName(ctx, input)
-	pokeToReturn := resource.ResourceToModel(result)
+	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 

@@ -1,53 +1,38 @@
 package main
 
-// import (
-// 	"context"
-// 	"fmt"
-// 	"time"
+import (
+	"log"
+	"net/http"
 
-// 	"github.com/bright-luminous/pokedexDB/resource"
-// )
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/bright-luminous/pokedexDB/graph"
+	"github.com/bright-luminous/pokedexDB/graph/generated"
+	"github.com/bright-luminous/pokedexDB/resource"
+	"github.com/go-chi/chi"
+)
 
-// var myPokemon []resource.Pokemon = []resource.Pokemon{
-// 	{
-// 		ID:          "1",
-// 		Name:        "phum",
-// 		Description: "look like pola bare",
-// 		Category:    "infar",
-// 		Type:        resource.Fairy,
-// 		Abilities:   []string{"drink coffee"},
-// 	},
-// 	{
-// 		ID:          "2",
-// 		Name:        "fone",
-// 		Description: "have her own keyboard",
-// 		Category:    "frontend",
-// 		Type:        resource.Ghost,
-// 		Abilities:   []string{"red screen"},
-// 	},
-// 	{
-// 		ID:          "3",
-// 		Name:        "chic",
-// 		Description: "have Ipad never use it",
-// 		Category:    "backend",
-// 		Type:        resource.Flying,
-// 		Abilities:   []string{"driving"},
-// 	},
-// }
+const defaultPort = "8080"
 
-// func main() {
-// 	operator := new(resource.PokemonSQLop)
-// 	operator.Init("sql.DB")
-// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-// 	if cancel != nil {
-// 		fmt.Printf("Context cancel msg : %v\n\n", cancel)
-// 	}
-// 	// result, err := operator.PokeCreate(ctx, myPokemon[0].Name, myPokemon[0].Description, myPokemon[0].Category, myPokemon[0].Type, myPokemon[0].Abilities)
-// 	// if cancel != nil {
-// 	// 	fmt.Printf("Context cancel msg : %v\n\n", err)
-// 	// }
-// 	// fmt.Printf("Context cancel msg : %v\n\n", result)
-// 	operator.PokeDeleteAll(ctx)
-// }
+func main() {
+	r := chi.NewRouter()
 
-// test push
+	operator := new(resource.PokemonSQLop)
+	operator.Init("sql.DB")
+
+	srv := handler.NewDefaultServer(
+		generated.NewExecutableSchema(
+			generated.Config{
+				Resolvers: &graph.Resolver{
+					DB: operator,
+				},
+			},
+		),
+	)
+
+	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	r.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", defaultPort)
+	log.Fatal(http.ListenAndServe(":"+defaultPort, r))
+}
