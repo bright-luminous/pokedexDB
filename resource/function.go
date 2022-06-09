@@ -68,7 +68,12 @@ func (op *PokemonSQLop) PokeCreate(ctx context.Context, name string, description
 }
 
 func (op *PokemonSQLop) PokeUpdate(ctx context.Context, ID string, updateField string, updateVal string) ([]Pokemon, error) {
-	_, err := op.db.NewUpdate().Model(op.modelToUse).Set("?= ?", updateField, updateVal).Where("id = ?", ID).Exec(ctx)
+	var err error
+	if updateField == "Type" {
+		_, err = op.db.NewUpdate().Model(op.modelToUse).Set("Type= ?", PokemonType(updateVal)).Where("id = ?", ID).Exec(ctx)
+	} else {
+		_, err = op.db.NewUpdate().Model(op.modelToUse).Set("?= ?", updateField, updateVal).Where("id = ?", ID).Exec(ctx)
+	}
 	resultPokemon, _ := op.PokeFindID(ctx, ID)
 	return resultPokemon, err
 }
@@ -80,7 +85,7 @@ func (op *PokemonSQLop) PokeUpdateMulti(ctx context.Context, ID string, updateNa
 		Set("Name= ?", updateName).
 		Set("Description= ?", updateDescription).
 		Set("Category= ?", updateCategory).
-		Set("Type= ?", updateType).
+		Set("Type= ?", PokemonType(updateType)).
 		Set("Abilities= ?", updateAbilities).
 		Where("id = ?", ID).Exec(ctx)
 	resultPokemon, _ := op.PokeFindID(ctx, ID)
