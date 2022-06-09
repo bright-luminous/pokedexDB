@@ -27,6 +27,12 @@ func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.Pokemo
 	return pokeToReturn, err
 }
 
+func (r *mutationResolver) UpdatePokemonMap(ctx context.Context, input model.PokemonMapUpdateInput) ([]*model.Pokemon, error) {
+	result, err := r.DB.PokeUpdateMulti(ctx, input.ID, input.Name, input.Description, input.Category, resource.PokemonType(input.Type), input.Abilities)
+	pokeToReturn := resource.ResourceToModel(result)
+	return pokeToReturn, err
+}
+
 func (r *mutationResolver) DeletePokemon(ctx context.Context, input model.DeleteIDInput) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeDelete(ctx, input.ID)
 	pokeToReturn := resource.ResourceToModel(result)

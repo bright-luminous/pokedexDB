@@ -73,6 +73,20 @@ func (op *PokemonSQLop) PokeUpdate(ctx context.Context, ID string, updateField s
 	return resultPokemon, err
 }
 
+func (op *PokemonSQLop) PokeUpdateMulti(ctx context.Context, ID string, updateName string, updateDescription string, updateCategory string, updateType PokemonType, updateAbilities []string) ([]Pokemon, error) {
+	_, err := op.db.NewUpdate().
+		Model(op.modelToUse).
+		Set("ID= ?", ID).
+		Set("Name= ?", updateName).
+		Set("Description= ?", updateDescription).
+		Set("Category= ?", updateCategory).
+		Set("Type= ?", updateType).
+		Set("Abilities= ?", updateAbilities).
+		Where("id = ?", ID).Exec(ctx)
+	resultPokemon, _ := op.PokeFindID(ctx, ID)
+	return resultPokemon, err
+}
+
 func (op *PokemonSQLop) PokeDelete(ctx context.Context, ID string) ([]Pokemon, error) {
 	op.db.NewDelete().Model(op.modelToUse).Where("id = ?", ID).Exec(ctx)
 	resultPokemon, err := op.PokeFindID(ctx, ID)
