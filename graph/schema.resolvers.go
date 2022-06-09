@@ -17,51 +17,44 @@ func (r *mutationResolver) CreatePokemon(ctx context.Context, input model.Pokemo
 		return nil, fmt.Errorf("id must be null")
 	}
 	result, err := r.DB.PokeCreate(ctx, input.Name, input.Description, input.Category, resource.PokemonType(input.Type), input.Abilities)
-	pokeToReturn := model.Pokemon{
-		ID:          result.ID,
-		Name:        result.Name,
-		Description: result.Description,
-		Category:    result.Category,
-		Type:        string(result.Type),
-		Abilities:   result.Abilities,
-	}
-	return &pokeToReturn, err
+	pokeToReturn := resource.ResourceToModel([]resource.Pokemon{result})
+	return pokeToReturn[0], err
 }
 
 func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.PokemonUpdateInput) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeUpdate(ctx, input.ID, input.UpdateKey, input.UpdateVal)
-	var pokeToReturn []*model.Pokemon
-	for _, v := range result {
-		pokeToAppend := model.Pokemon{
-			Name:        v.Name,
-			Description: v.Description,
-			Category:    v.Category,
-			Type:        string(v.Type),
-			Abilities:   v.Abilities,
-		}
-		pokeToReturn = append(pokeToReturn, &pokeToAppend)
-	}
+	pokeToReturn := resource.ResourceToModel(result)
 	return pokeToReturn, err
 }
 
 func (r *mutationResolver) DeletePokemon(ctx context.Context, input model.DeleteIDInput) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented"))
+	result, err := r.DB.PokeDelete(ctx, input.ID)
+	pokeToReturn := resource.ResourceToModel(result)
+	return pokeToReturn, err
 }
 
 func (r *mutationResolver) DeleteAllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented"))
+	result, err := r.DB.PokeDeleteAll(ctx)
+	pokeToReturn := resource.ResourceToModel(result)
+	return pokeToReturn, err
 }
 
 func (r *queryResolver) ListAllPokemon(ctx context.Context) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented"))
+	result, err := r.DB.PokeList(ctx)
+	pokeToReturn := resource.ResourceToModel(result)
+	return pokeToReturn, err
 }
 
 func (r *queryResolver) QueryPokemonID(ctx context.Context, input string) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented"))
+	result, err := r.DB.PokeFindID(ctx, input)
+	pokeToReturn := resource.ResourceToModel(result)
+	return pokeToReturn, err
 }
 
 func (r *queryResolver) QueryPokemonName(ctx context.Context, input string) ([]*model.Pokemon, error) {
-	panic(fmt.Errorf("not implemented"))
+	result, err := r.DB.PokeFindName(ctx, input)
+	pokeToReturn := resource.ResourceToModel(result)
+	return pokeToReturn, err
 }
 
 // Mutation returns generated.MutationResolver implementation.

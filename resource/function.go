@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/bright-luminous/pokedexDB/graph/model"
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
@@ -16,6 +17,22 @@ func ErrCheck(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func ResourceToModel(result []Pokemon) []*model.Pokemon {
+	var pokeToReturn []*model.Pokemon
+	for _, v := range result {
+		pokeToAppend := model.Pokemon{
+			ID:          v.ID,
+			Name:        v.Name,
+			Description: v.Description,
+			Category:    v.Category,
+			Type:        string(v.Type),
+			Abilities:   v.Abilities,
+		}
+		pokeToReturn = append(pokeToReturn, &pokeToAppend)
+	}
+	return pokeToReturn
 }
 
 func (op *PokemonSQLop) Init(dbName string) {
@@ -82,11 +99,12 @@ func (op *PokemonSQLop) PokeFindName(ctx context.Context, Name string) ([]Pokemo
 	return *arrModel, err
 }
 
-func (op *PokemonSQLop) PokeDeleteAll(ctx context.Context) {
+func (op *PokemonSQLop) PokeDeleteAll(ctx context.Context) ([]Pokemon, error) {
 	pokeArr, err := op.PokeList(ctx)
 	ErrCheck(err)
 	for _, v := range pokeArr {
 		_, err := op.PokeDelete(ctx, v.ID)
 		ErrCheck(err)
 	}
+	return pokeArr, err
 }
