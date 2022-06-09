@@ -13,10 +13,9 @@ import (
 
 // Should create a test function per operation.
 // If there are 5 operations, there should be at least 5 test functions for each operation.
-func TestOpFunc(t *testing.T) {
-	myPokemon := []model.Pokemon{
+func TestOpCreateFunc(t *testing.T) {
+	myPokemon := []model.PokemonCreateInput{
 		{
-			ID:          "1",
 			Name:        "phum",
 			Description: "look like pola bare",
 			Category:    "infar",
@@ -24,7 +23,6 @@ func TestOpFunc(t *testing.T) {
 			Abilities:   []string{"drink coffee"},
 		},
 		{
-			ID:          "2",
 			Name:        "fone",
 			Description: "have her own keyboard",
 			Category:    "frontend",
@@ -32,7 +30,6 @@ func TestOpFunc(t *testing.T) {
 			Abilities:   []string{"red screen"},
 		},
 		{
-			ID:          "3",
 			Name:        "chic",
 			Description: "have Ipad never use it",
 			Category:    "backend",
@@ -44,24 +41,20 @@ func TestOpFunc(t *testing.T) {
 	if cancel != nil {
 		fmt.Printf("Context cancel msg : %v\n\n", cancel)
 	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
 
-	operator := new(resource.PokemonSQLop)
-	operator.Init("sql.DB")
-
-	//create table (not working)
-	// queryResult, err := operator.createTable(ctx)
-	// assert.Equal(t, 1, queryResult)
-	// assert.Equal(t, nil, err)
-
-	//create pokemon
-	returnPokemon, err := operator.PokeCreate(ctx, myPokemon[0].Name, myPokemon[0].Description, myPokemon[0].Category, myPokemon[0].Type, myPokemon[0].Abilities)
+	returnPokemon, err := operator.PokeCreate(ctx, myPokemon[0])
 	assert.Equal(t, myPokemon[0], returnPokemon)
 	assert.Equal(t, nil, err)
+}
 
-	operator.PokeCreate(ctx, myPokemon[1].Name, myPokemon[1].Description, myPokemon[1].Category, myPokemon[1].Type, myPokemon[1].Abilities)
-	operator.PokeCreate(ctx, myPokemon[2].Name, myPokemon[2].Description, myPokemon[2].Category, myPokemon[2].Type, myPokemon[2].Abilities)
+func TestOpUpdateFunc(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
 
-	//update pokemon
 	updatedPokemon, err := operator.PokeUpdate(ctx, "1", "Description", "maybe look like whale")
 	afterUpdatePokemon := []model.Pokemon{
 		{
@@ -81,27 +74,90 @@ func TestOpFunc(t *testing.T) {
 		fmt.Println(err)
 	}
 	fmt.Println(listResult)
+}
 
-	//delete pokemon
+func TestOpUpdateMultiFunc(t *testing.T) {
+	tobeUpdatePokemon := model.PokemonMapUpdateInput{
+		ID:          "",
+		Name:        "New",
+		Description: "play genshin",
+		Category:    "4th year now",
+		Type:        model.PokemonTypeBug,
+		Abilities:   []string{"clean his glass"},
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
+
+	updateResult, err := operator.PokeUpdateMulti(ctx, model.Pokemon(tobeUpdatePokemon))
+	assert.Equal(t, []model.Pokemon(nil), updateResult)
+	assert.Equal(t, nil, err)
+
+}
+
+func TestOpDeleteFunc(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
+
 	deletedPokemon, err := operator.PokeDelete(ctx, "1")
 	assert.Equal(t, []model.Pokemon(nil), deletedPokemon)
 	assert.Equal(t, nil, err)
 
-	//list all pokemon
-	listResult, err = operator.PokeList(ctx)
-	assert.Equal(t, []model.Pokemon{myPokemon[1], myPokemon[2]}, listResult)
+}
+
+func TestOpDeleteAll(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
+
+	result, err := operator.PokeDeleteAll(ctx)
+	assert.Equal(t, []model.Pokemon(nil), result)
 	assert.Equal(t, nil, err)
 
-	//list ID pokemon
-	idResult, err := operator.PokeFindID(ctx, "2")
-	assert.Equal(t, []model.Pokemon{myPokemon[1]}, idResult)
+}
+
+func TestOpListAll(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
+	listResult, err := operator.PokeList(ctx)
+	assert.Equal(t, []model.Pokemon{}, listResult)
 	assert.Equal(t, nil, err)
 
-	//list name pokemon
-	nameResult, err := operator.PokeFindName(ctx, "chic")
-	assert.Equal(t, []model.Pokemon{myPokemon[2]}, nameResult)
+}
+
+func TestOpListId(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
+
+	idResult, err := operator.PokeFindByID(ctx, "2")
+	assert.Equal(t, []model.Pokemon{}, idResult)
 	assert.Equal(t, nil, err)
 
-	//clear the DB
-	// operator.PokeDeleteAll(ctx)
+}
+
+func TestOpListName(t *testing.T) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	if cancel != nil {
+		fmt.Printf("Context cancel msg : %v\n\n", cancel)
+	}
+	operator := resource.NewPokemonSQLOperation("sql.DB")
+
+	nameResult, err := operator.PokeFindByName(ctx, "chic")
+	assert.Equal(t, []model.Pokemon{}, nameResult)
+	assert.Equal(t, nil, err)
+
 }

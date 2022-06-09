@@ -295,10 +295,12 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "../schema.graphqls", Input: `# GraphQL schema example
+	{Name: "../schema.graphqls", Input: `# The below comments are not necessary
+# GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
 
+# Code formatting is inconsistent. Code formatting should be cleaned before pushing.
 type Pokemon {
   ID: ID!
 	Name: String!
@@ -307,6 +309,21 @@ type Pokemon {
 	Type: pokemonType!
 	Abilities: [String!]!
 }
+type Mutation {
+  CreatePokemon(input: PokemonCreateInput!): Pokemon!
+  UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
+  UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
+
+  DeletePokemon(input: DeleteIDInput!): [Pokemon!]
+  DeleteAllPokemon: [Pokemon!]
+}
+
+type Query {
+  ListAllPokemon: [Pokemon!]
+  QueryPokemonID(input: ID!): [Pokemon!]
+  QueryPokemonName(input: String!): [Pokemon!]
+}
+
 enum pokemonType {
 	Bug
 	Dark
@@ -328,6 +345,15 @@ enum pokemonType {
 	Water
 }
 
+enum FieldAvailable {
+	ID
+	Name
+	Description
+	Category
+	Type
+	Abilities
+}
+
 input PokemonCreateInput {
   ID: ID
 	Name: String!
@@ -339,7 +365,7 @@ input PokemonCreateInput {
 
 input PokemonUpdateInput {
   ID: ID!
-	UpdateKey: String!
+	UpdateKey: FieldAvailable!
 	UpdateVal: String!
 }
 
@@ -355,21 +381,7 @@ input PokemonMapUpdateInput {
 input DeleteIDInput {
   ID: ID!
 }
-
-type Mutation {
-  CreatePokemon(input: PokemonCreateInput!): Pokemon!
-  UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
-  UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
-
-  DeletePokemon(input: DeleteIDInput!): [Pokemon!]
-  DeleteAllPokemon: [Pokemon!]
-}
-
-type Query {
-  ListAllPokemon: [Pokemon!]
-  QueryPokemonID(input: ID!): [Pokemon!]
-  QueryPokemonName(input: String!): [Pokemon!]
-}`, BuiltIn: false},
+`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -3365,7 +3377,7 @@ func (ec *executionContext) unmarshalInputPokemonUpdateInput(ctx context.Context
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UpdateKey"))
-			it.UpdateKey, err = ec.unmarshalNString2string(ctx, v)
+			it.UpdateKey, err = ec.unmarshalNFieldAvailable2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐFieldAvailable(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3955,6 +3967,16 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 func (ec *executionContext) unmarshalNDeleteIDInput2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐDeleteIDInput(ctx context.Context, v interface{}) (model.DeleteIDInput, error) {
 	res, err := ec.unmarshalInputDeleteIDInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNFieldAvailable2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐFieldAvailable(ctx context.Context, v interface{}) (model.FieldAvailable, error) {
+	var res model.FieldAvailable
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFieldAvailable2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐFieldAvailable(ctx context.Context, sel ast.SelectionSet, v model.FieldAvailable) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {

@@ -17,8 +17,7 @@ const defaultPort = "8080"
 func main() {
 	r := chi.NewRouter()
 
-	operator := new(resource.PokemonSQLop)
-	operator.Init("sql.DB")
+	operator := resource.NewPokemonSQLOperation("sql.DB")
 
 	srv := handler.NewDefaultServer(
 		generated.NewExecutableSchema(

@@ -12,6 +12,21 @@ type Pokemon {
 	Type: pokemonType!
 	Abilities: [String!]!
 }
+type Mutation {
+  CreatePokemon(input: PokemonCreateInput!): Pokemon!
+  UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
+  UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
+
+  DeletePokemon(input: DeleteIDInput!): [Pokemon!]
+  DeleteAllPokemon: [Pokemon!]
+}
+
+type Query {
+  ListAllPokemon: [Pokemon!]
+  QueryPokemonID(input: ID!): [Pokemon!]
+  QueryPokemonName(input: String!): [Pokemon!]
+}
+
 enum pokemonType {
 	Bug
 	Dark
@@ -33,6 +48,15 @@ enum pokemonType {
 	Water
 }
 
+enum FieldAvailable {
+	ID
+	Name
+	Description
+	Category
+	Type
+	Abilities
+}
+
 input PokemonCreateInput {
   ID: ID
 	Name: String!
@@ -44,7 +68,7 @@ input PokemonCreateInput {
 
 input PokemonUpdateInput {
   ID: ID!
-	UpdateKey: String!
+	UpdateKey: FieldAvailable!
 	UpdateVal: String!
 }
 
@@ -59,19 +83,4 @@ input PokemonMapUpdateInput {
 
 input DeleteIDInput {
   ID: ID!
-}
-
-type Mutation {
-  CreatePokemon(input: PokemonCreateInput!): Pokemon!
-  UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
-  UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
-
-  DeletePokemon(input: DeleteIDInput!): [Pokemon!]
-  DeleteAllPokemon: [Pokemon!]
-}
-
-type Query {
-  ListAllPokemon: [Pokemon!]
-  QueryPokemonID(input: ID!): [Pokemon!]
-  QueryPokemonName(input: String!): [Pokemon!]
 }

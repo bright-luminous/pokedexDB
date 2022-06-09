@@ -16,7 +16,7 @@ func (r *mutationResolver) CreatePokemon(ctx context.Context, input model.Pokemo
 	if input.ID != nil {
 		return nil, fmt.Errorf("id must be null")
 	}
-	result, err := r.DB.PokeCreate(ctx, input.Name, input.Description, input.Category, input.Type, input.Abilities)
+	result, err := r.DB.PokeCreate(ctx, input)
 	pokeToReturn := []model.Pokemon{result}
 	return &pokeToReturn[0], err
 }
@@ -29,7 +29,7 @@ func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.Pokemo
 }
 
 func (r *mutationResolver) UpdatePokemonMap(ctx context.Context, input model.PokemonMapUpdateInput) ([]*model.Pokemon, error) {
-	result, err := r.DB.PokeUpdateMulti(ctx, input.ID, input.Name, input.Description, input.Category, input.Type, input.Abilities)
+	result, err := r.DB.PokeUpdateMulti(ctx, model.Pokemon(input))
 	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
@@ -53,13 +53,13 @@ func (r *queryResolver) ListAllPokemon(ctx context.Context) ([]*model.Pokemon, e
 }
 
 func (r *queryResolver) QueryPokemonID(ctx context.Context, input string) ([]*model.Pokemon, error) {
-	result, err := r.DB.PokeFindID(ctx, input)
+	result, err := r.DB.PokeFindByID(ctx, input)
 	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
 
 func (r *queryResolver) QueryPokemonName(ctx context.Context, input string) ([]*model.Pokemon, error) {
-	result, err := r.DB.PokeFindName(ctx, input)
+	result, err := r.DB.PokeFindByName(ctx, input)
 	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }

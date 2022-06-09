@@ -40,9 +40,58 @@ type PokemonMapUpdateInput struct {
 }
 
 type PokemonUpdateInput struct {
-	ID        string `json:"ID"`
-	UpdateKey string `json:"UpdateKey"`
-	UpdateVal string `json:"UpdateVal"`
+	ID        string         `json:"ID"`
+	UpdateKey FieldAvailable `json:"UpdateKey"`
+	UpdateVal string         `json:"UpdateVal"`
+}
+
+type FieldAvailable string
+
+const (
+	FieldAvailableID          FieldAvailable = "ID"
+	FieldAvailableName        FieldAvailable = "Name"
+	FieldAvailableDescription FieldAvailable = "Description"
+	FieldAvailableCategory    FieldAvailable = "Category"
+	FieldAvailableType        FieldAvailable = "Type"
+	FieldAvailableAbilities   FieldAvailable = "Abilities"
+)
+
+var AllFieldAvailable = []FieldAvailable{
+	FieldAvailableID,
+	FieldAvailableName,
+	FieldAvailableDescription,
+	FieldAvailableCategory,
+	FieldAvailableType,
+	FieldAvailableAbilities,
+}
+
+func (e FieldAvailable) IsValid() bool {
+	switch e {
+	case FieldAvailableID, FieldAvailableName, FieldAvailableDescription, FieldAvailableCategory, FieldAvailableType, FieldAvailableAbilities:
+		return true
+	}
+	return false
+}
+
+func (e FieldAvailable) String() string {
+	return string(e)
+}
+
+func (e *FieldAvailable) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = FieldAvailable(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid FieldAvailable", str)
+	}
+	return nil
+}
+
+func (e FieldAvailable) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 type PokemonType string
