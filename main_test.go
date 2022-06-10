@@ -11,6 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Should create a test function per operation.
+// If there are 5 operations, there should be at least 5 test functions for each operation.
 func TestOpFunc(t *testing.T) {
 	myPokemon := []model.Pokemon{
 		{
