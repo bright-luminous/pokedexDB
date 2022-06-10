@@ -1,7 +1,9 @@
+# The below comments are not necessary
 # GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
 
+# Code formatting is inconsistent. Code formatting should be cleaned before pushing.
 type Pokemon {
   ID: ID!
 	Name: String!

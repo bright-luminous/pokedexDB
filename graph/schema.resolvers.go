@@ -23,6 +23,7 @@ func (r *mutationResolver) CreatePokemon(ctx context.Context, input model.Pokemo
 
 func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.PokemonUpdateInput) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeUpdate(ctx, input.ID, input.UpdateKey, input.UpdateVal)
+	// You won't need `ReferencePokemon` function if the models is `[]*model.Pokemon` by default instead of `[]model.Pokemon`.
 	pokeToReturn := resource.ReferencePokemon(result)
 	return pokeToReturn, err
 }
