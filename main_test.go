@@ -33,7 +33,7 @@ func testSetup(dbName string) (context.Context, *resource.PokemonSQLop) {
 	if cancel != nil {
 		fmt.Printf("Context cancel msg : %v\n\n", cancel)
 	}
-	operator, err := resource.NewPokemonSQLOperation("sql.DB")
+	operator, err := resource.NewPokemonSQLiteOperation("sql.DB")
 	resource.PrintIfErrorExist(err)
 	return ctx, operator
 }

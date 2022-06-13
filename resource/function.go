@@ -8,7 +8,9 @@ import (
 	"github.com/bright-luminous/pokedexDB/graph/model"
 	"github.com/google/uuid"
 	"github.com/uptrace/bun"
+	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
+	"github.com/uptrace/bun/driver/pgdriver"
 	"github.com/uptrace/bun/driver/sqliteshim"
 	"github.com/uptrace/bun/extra/bundebug"
 )
@@ -33,7 +35,7 @@ func CheckPokeType(inStr string) model.PokemonType {
 	return typeTobeReturn
 }
 
-func NewPokemonSQLOperation(dbName string) (*PokemonSQLop, error) {
+func NewPokemonSQLiteOperation(dbName string) (*PokemonSQLop, error) {
 	sqldb, err := sql.Open(sqliteshim.ShimName, dbName)
 	db := bun.NewDB(sqldb, sqlitedialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(
@@ -44,6 +46,15 @@ func NewPokemonSQLOperation(dbName string) (*PokemonSQLop, error) {
 		modelToUse: new(model.Pokemon),
 		db:         db,
 	}, err
+}
+
+func NewPokemonPostgresOperation(inDSN string) *PokemonSQLop {
+	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(inDSN)))
+	db := bun.NewDB(sqldb, pgdialect.New())
+	return &PokemonSQLop{
+		modelToUse: new(model.Pokemon),
+		db:         db,
+	}
 }
 
 func (op *PokemonSQLop) CreateTable(ctx context.Context) (sql.Result, error) {
