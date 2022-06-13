@@ -28,26 +28,9 @@ func CheckPokeType(inStr string) model.PokemonType {
 		}
 	}
 	if typeTobeReturn == "" {
-		panic("wrong type")
+		fmt.Println("wrong type")
 	}
 	return typeTobeReturn
-}
-
-func ReferencePokemon(pokemon []model.Pokemon) []*model.Pokemon {
-	var pokeToReturn []*model.Pokemon
-	for _, v := range pokemon {
-		typeTobeUse := v.Type
-		pokeToAppend := model.Pokemon{
-			ID:          v.ID,
-			Name:        v.Name,
-			Description: v.Description,
-			Category:    v.Category,
-			Type:        typeTobeUse,
-			Abilities:   v.Abilities,
-		}
-		pokeToReturn = append(pokeToReturn, &pokeToAppend)
-	}
-	return pokeToReturn
 }
 
 func NewPokemonSQLOperation(dbName string) *PokemonSQLop {
@@ -69,7 +52,7 @@ func (op *PokemonSQLop) CreateTable(ctx context.Context) (sql.Result, error) {
 	return sqlResult, err
 }
 
-func (op *PokemonSQLop) PokeCreate(ctx context.Context, pokeInput model.PokemonCreateInput) (model.Pokemon, error) {
+func (op *PokemonSQLop) PokeCreate(ctx context.Context, pokeInput *model.PokemonCreateInput) (*model.Pokemon, error) {
 	newID := uuid.New().String()
 	pokemonTobeAdd := model.Pokemon{
 		ID:          newID,
@@ -79,10 +62,10 @@ func (op *PokemonSQLop) PokeCreate(ctx context.Context, pokeInput model.PokemonC
 		Type:        pokeInput.Type,
 		Abilities:   pokeInput.Abilities}
 	_, err := op.db.NewInsert().Model(&pokemonTobeAdd).Exec(ctx)
-	return pokemonTobeAdd, err
+	return &pokemonTobeAdd, err
 }
 
-func (op *PokemonSQLop) PokeUpdate(ctx context.Context, ID string, updateField model.FieldAvailable, updateVal string) ([]model.Pokemon, error) {
+func (op *PokemonSQLop) PokeUpdate(ctx context.Context, ID string, updateField model.FieldAvailable, updateVal string) ([]*model.Pokemon, error) {
 	var err error
 	if updateField == "Type" {
 		newType := CheckPokeType(updateVal)
@@ -95,40 +78,40 @@ func (op *PokemonSQLop) PokeUpdate(ctx context.Context, ID string, updateField m
 	return resultPokemon, err
 }
 
-func (op *PokemonSQLop) PokeUpdateMulti(ctx context.Context, updateInput model.Pokemon) ([]model.Pokemon, error) {
+func (op *PokemonSQLop) PokeUpdateMulti(ctx context.Context, updateInput model.Pokemon) ([]*model.Pokemon, error) {
 	_, err := op.db.NewUpdate().Model(&updateInput).Where("id = ?", updateInput.ID).Exec(ctx)
 	resultPokemon, _ := op.PokeFindByID(ctx, updateInput.ID)
 	return resultPokemon, err
 }
 
-func (op *PokemonSQLop) PokeDelete(ctx context.Context, ID string) ([]model.Pokemon, error) {
+func (op *PokemonSQLop) PokeDelete(ctx context.Context, ID string) ([]*model.Pokemon, error) {
 	_, err := op.db.NewDelete().Model(op.modelToUse).Where("id = ?", ID).Exec(ctx)
 	PrintIfErrorExist(err)
 	resultPokemon, err := op.PokeFindByID(ctx, ID)
 	return resultPokemon, err
 }
 
-func (op *PokemonSQLop) PokeList(ctx context.Context) ([]model.Pokemon, error) {
-	pokemons := new([]model.Pokemon)
+func (op *PokemonSQLop) PokeList(ctx context.Context) ([]*model.Pokemon, error) {
+	pokemons := new([]*model.Pokemon)
 	err := op.db.NewSelect().Model(pokemons).Scan(ctx, pokemons)
 	return *pokemons, err
 }
 
-func (op *PokemonSQLop) PokeFindByID(ctx context.Context, ID string) ([]model.Pokemon, error) {
-	arrModel := new([]model.Pokemon)
+func (op *PokemonSQLop) PokeFindByID(ctx context.Context, ID string) ([]*model.Pokemon, error) {
+	arrModel := new([]*model.Pokemon)
 	err := op.db.NewSelect().Model(op.modelToUse).Where("id = ?", ID).Scan(ctx, arrModel)
 	PrintIfErrorExist(err)
 	return *arrModel, err
 }
 
-func (op *PokemonSQLop) PokeFindByName(ctx context.Context, Name string) ([]model.Pokemon, error) {
-	arrModel := new([]model.Pokemon)
+func (op *PokemonSQLop) PokeFindByName(ctx context.Context, Name string) ([]*model.Pokemon, error) {
+	arrModel := new([]*model.Pokemon)
 	err := op.db.NewSelect().Model(op.modelToUse).Where("Name = ?", Name).Scan(ctx, arrModel)
 	PrintIfErrorExist(err)
 	return *arrModel, err
 }
 
-func (op *PokemonSQLop) PokeDeleteAll(ctx context.Context) ([]model.Pokemon, error) {
+func (op *PokemonSQLop) PokeDeleteAll(ctx context.Context) ([]*model.Pokemon, error) {
 	pokeArr, err := op.PokeList(ctx)
 	PrintIfErrorExist(err)
 	for _, v := range pokeArr {
