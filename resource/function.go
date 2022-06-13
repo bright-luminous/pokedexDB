@@ -85,9 +85,9 @@ func (op *PokemonSQLop) PokeUpdateMulti(ctx context.Context, updateInput model.P
 }
 
 func (op *PokemonSQLop) PokeDelete(ctx context.Context, ID string) ([]*model.Pokemon, error) {
-	_, err := op.db.NewDelete().Model(op.modelToUse).Where("id = ?", ID).Exec(ctx)
-	PrintIfErrorExist(err)
 	resultPokemon, err := op.PokeFindByID(ctx, ID)
+	PrintIfErrorExist(err)
+	_, err = op.db.NewDelete().Model(op.modelToUse).Where("id = ?", ID).Exec(ctx)
 	return resultPokemon, err
 }
 
