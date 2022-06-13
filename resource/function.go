@@ -33,9 +33,8 @@ func CheckPokeType(inStr string) model.PokemonType {
 	return typeTobeReturn
 }
 
-func NewPokemonSQLOperation(dbName string) *PokemonSQLop {
+func NewPokemonSQLOperation(dbName string) (*PokemonSQLop, error) {
 	sqldb, err := sql.Open(sqliteshim.ShimName, dbName)
-	PrintIfErrorExist(err)
 	db := bun.NewDB(sqldb, sqlitedialect.New())
 	db.AddQueryHook(bundebug.NewQueryHook(
 		bundebug.WithVerbose(true),
@@ -44,7 +43,7 @@ func NewPokemonSQLOperation(dbName string) *PokemonSQLop {
 	return &PokemonSQLop{
 		modelToUse: new(model.Pokemon),
 		db:         db,
-	}
+	}, err
 }
 
 func (op *PokemonSQLop) CreateTable(ctx context.Context) (sql.Result, error) {
@@ -100,7 +99,6 @@ func (op *PokemonSQLop) PokeList(ctx context.Context) ([]*model.Pokemon, error) 
 func (op *PokemonSQLop) PokeFindByID(ctx context.Context, ID string) ([]*model.Pokemon, error) {
 	arrModel := new([]*model.Pokemon)
 	err := op.db.NewSelect().Model(op.modelToUse).Where("id = ?", ID).Scan(ctx, arrModel)
-	PrintIfErrorExist(err)
 	return *arrModel, err
 }
 

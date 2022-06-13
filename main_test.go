@@ -28,20 +28,14 @@ var inputPokemon = model.PokemonCreateInput{
 	Abilities:   currentExpectPokemon.Abilities,
 }
 
-// Should create a test function per operation.
-// If there are 5 operations, there should be at least 5 test functions for each operation.
 func testSetup(dbName string) (context.Context, *resource.PokemonSQLop) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	if cancel != nil {
 		fmt.Printf("Context cancel msg : %v\n\n", cancel)
 	}
-	operator := resource.NewPokemonSQLOperation("sql.DB")
+	operator, err := resource.NewPokemonSQLOperation("sql.DB")
+	resource.PrintIfErrorExist(err)
 	return ctx, operator
-}
-
-func createAdditional(ctx context.Context, op resource.PokemonSQLop, input model.PokemonCreateInput) (*model.Pokemon, error) {
-	returnPokemon, err := op.PokeCreate(ctx, &input)
-	return returnPokemon, err
 }
 
 func TestOpCreateFunc(t *testing.T) {
@@ -57,21 +51,21 @@ func TestOpCreateFunc(t *testing.T) {
 
 func TestOpUpdateFunc(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	assert.Equal(t, nil, err)
 	currentExpectPokemon.ID = returnPokemon.ID
 
 	updateVar := "maybe look like whale"
 	updatedPokemon, err := operator.PokeUpdate(ctx, currentExpectPokemon.ID, model.FieldAvailableDescription, updateVar)
 	currentExpectPokemon.Description = updateVar
-	assert.Equal(t, currentExpectPokemon, *updatedPokemon[0])
+	assert.Equal(t, []*model.Pokemon{&currentExpectPokemon}, updatedPokemon)
 	assert.Equal(t, nil, err)
 	operator.PokeDeleteAll(ctx)
 }
 
 func TestOpUpdateMultiFunc(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	resource.PrintIfErrorExist(err)
 	tobeUpdatePokemon := model.Pokemon{
 		ID:          returnPokemon.ID,
@@ -84,7 +78,7 @@ func TestOpUpdateMultiFunc(t *testing.T) {
 	currentExpectPokemon = tobeUpdatePokemon
 
 	updateResult, err := operator.PokeUpdateMulti(ctx, tobeUpdatePokemon)
-	assert.Equal(t, currentExpectPokemon, *updateResult[0])
+	assert.Equal(t, []*model.Pokemon{&currentExpectPokemon}, updateResult)
 	assert.Equal(t, nil, err)
 	operator.PokeDeleteAll(ctx)
 
@@ -92,11 +86,11 @@ func TestOpUpdateMultiFunc(t *testing.T) {
 
 func TestOpDeleteFunc(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	resource.PrintIfErrorExist(err)
 
 	deletedPokemon, err := operator.PokeDelete(ctx, returnPokemon.ID)
-	assert.Equal(t, *returnPokemon, *deletedPokemon[0])
+	assert.Equal(t, []*model.Pokemon{returnPokemon}, deletedPokemon)
 	assert.Equal(t, nil, err)
 	operator.PokeDeleteAll(ctx)
 
@@ -104,11 +98,11 @@ func TestOpDeleteFunc(t *testing.T) {
 
 func TestOpDeleteAll(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	resource.PrintIfErrorExist(err)
 
 	result, err := operator.PokeDeleteAll(ctx)
-	assert.Equal(t, returnPokemon, result[0])
+	assert.Equal(t, []*model.Pokemon{returnPokemon}, result)
 	assert.Equal(t, nil, err)
 	operator.PokeDeleteAll(ctx)
 
@@ -116,7 +110,7 @@ func TestOpDeleteAll(t *testing.T) {
 
 func TestOpListAll(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	resource.PrintIfErrorExist(err)
 
 	listResult, err := operator.PokeList(ctx)
@@ -128,7 +122,7 @@ func TestOpListAll(t *testing.T) {
 
 func TestOpListId(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	resource.PrintIfErrorExist(err)
 
 	idResult, err := operator.PokeFindByID(ctx, returnPokemon.ID)
@@ -140,7 +134,7 @@ func TestOpListId(t *testing.T) {
 
 func TestOpListName(t *testing.T) {
 	ctx, operator := testSetup("sql.DB")
-	returnPokemon, err := createAdditional(ctx, *operator, inputPokemon)
+	returnPokemon, err := operator.PokeCreate(ctx, &inputPokemon)
 	resource.PrintIfErrorExist(err)
 
 	nameResult, err := operator.PokeFindByName(ctx, returnPokemon.Name)
