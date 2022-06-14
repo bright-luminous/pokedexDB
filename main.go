@@ -30,7 +30,6 @@ func main() {
 		host, port, user, password, dbname)
 
 	operator, err := resource.NewPokemonPostgresOperation(psqlInfo)
-	// operator.CreateTable(context.Background())
 	resource.PrintIfErrorExist(err)
 
 	srv := handler.NewDefaultServer(
@@ -49,21 +48,3 @@ func main() {
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", goChiPort)
 	log.Fatal(http.ListenAndServe(":"+goChiPort, r))
 }
-
-// func main() {
-// 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
-// 		"password=%s dbname=%s sslmode=disable",
-// 		host, port, user, password, dbname)
-// 	db, err := sql.Open("postgres", psqlInfo)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer db.Close()
-
-// 	err = db.Ping()
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	fmt.Println("Successfully connected!")
-// }
