@@ -15,18 +15,23 @@ import (
 )
 
 const (
-	host     string = "localhost"
-	port     string = "5432"
-	user     string = "postgres"
-	password string = "Eauu0244"
-	dbName   string = "postgres"
+	host      string = "localhost"
+	port      string = "5432"
+	user      string = "postgres"
+	password  string = "Eauu0244"
+	dbname    string = "postgres"
+	goChiPort string = "8080"
 )
 
 func main() {
 	r := chi.NewRouter()
-	psqlInfo := fmt.Sprintf("postgres://%s:@%s:%s/%s?sslmode=disable", user, host, port, dbName)
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
 
-	operator := resource.NewPokemonPostgresOperation(psqlInfo)
+	operator, err := resource.NewPokemonPostgresOperation(psqlInfo)
+	// operator.CreateTable(context.Background())
+	resource.PrintIfErrorExist(err)
 
 	srv := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
@@ -41,6 +46,24 @@ func main() {
 	r.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	r.Handle("/query", srv)
 
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", goChiPort)
+	log.Fatal(http.ListenAndServe(":"+goChiPort, r))
 }
+
+// func main() {
+// 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+// 		"password=%s dbname=%s sslmode=disable",
+// 		host, port, user, password, dbname)
+// 	db, err := sql.Open("postgres", psqlInfo)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	defer db.Close()
+
+// 	err = db.Ping()
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	fmt.Println("Successfully connected!")
+// }

@@ -2,6 +2,7 @@ package resource
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/bright-luminous/pokedexDB/graph/model"
 	"github.com/uptrace/bun"
@@ -13,6 +14,8 @@ type PokemonSQLop struct {
 }
 
 type DatabaseOp interface {
+	CreateTable(ctx context.Context) (sql.Result, error)
+
 	PokeCreate(ctx context.Context, pokeInput *model.PokemonCreateInput) (*model.Pokemon, error)
 	PokeUpdate(ctx context.Context, ID string, updateField model.FieldAvailable, updateVal string) ([]*model.Pokemon, error)
 	PokeUpdateMulti(ctx context.Context, updateInput model.Pokemon) ([]*model.Pokemon, error)

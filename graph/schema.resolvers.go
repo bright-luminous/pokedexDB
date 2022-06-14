@@ -11,6 +11,12 @@ import (
 	"github.com/bright-luminous/pokedexDB/graph/model"
 )
 
+func (r *mutationResolver) CreateTable(ctx context.Context) (*model.Pokemon, error) {
+	var nilReturn model.Pokemon
+	_, err := r.DB.CreateTable(ctx)
+	return &nilReturn, err
+}
+
 func (r *mutationResolver) CreatePokemon(ctx context.Context, input model.PokemonCreateInput) (*model.Pokemon, error) {
 	if input.ID != nil {
 		return nil, fmt.Errorf("id must be null")

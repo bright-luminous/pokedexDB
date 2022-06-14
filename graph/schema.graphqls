@@ -13,6 +13,8 @@ type Pokemon {
 	Abilities: [String!]!
 }
 type Mutation {
+	CreateTable: Pokemon
+
   CreatePokemon(input: PokemonCreateInput!): Pokemon!
   UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
   UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]

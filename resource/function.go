@@ -10,7 +10,6 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/pgdialect"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
-	"github.com/uptrace/bun/driver/pgdriver"
 	"github.com/uptrace/bun/driver/sqliteshim"
 	"github.com/uptrace/bun/extra/bundebug"
 )
@@ -48,13 +47,17 @@ func NewPokemonSQLiteOperation(dbName string) (*PokemonSQLop, error) {
 	}, err
 }
 
-func NewPokemonPostgresOperation(inDSN string) *PokemonSQLop {
-	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(inDSN)))
-	db := bun.NewDB(sqldb, pgdialect.New())
+func NewPokemonPostgresOperation(inDSN string) (*PokemonSQLop, error) {
+	db, err := sql.Open("postgres", inDSN)
+	bunDB := bun.NewDB(db, pgdialect.New())
+	bunDB.AddQueryHook(bundebug.NewQueryHook(
+		bundebug.WithVerbose(true),
+		bundebug.FromEnv("BUNDEBUG"),
+	))
 	return &PokemonSQLop{
 		modelToUse: new(model.Pokemon),
-		db:         db,
-	}
+		db:         bunDB,
+	}, err
 }
 
 func (op *PokemonSQLop) CreateTable(ctx context.Context) (sql.Result, error) {

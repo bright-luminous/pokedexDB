@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Jun 13 08:17:29 2022
+# Make data base, printed on Tue Jun 14 12:57:01 2022
 
 # Variables
 
@@ -25,7 +25,7 @@ SNAP_INSTANCE_KEY =
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-118cf7ae-64da-4248-b7d7-dedf5c277dd6.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-225cb9d0-9835-4b8d-8fce-0f84c5be04ad.sock
 # environment
 LC_NAME = th_TH.UTF-8
 # environment
@@ -45,7 +45,7 @@ GOPATH = /home/phirun/go
 # environment
 SNAP_INSTANCE_NAME = code
 # environment
-GDK_PIXBUF_MODULEDIR = /snap/code/97/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
+GDK_PIXBUF_MODULEDIR = /snap/code/98/usr/lib/x86_64-linux-gnu/gdk-pixbuf-2.0/2.10.0/loaders
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -63,11 +63,11 @@ VSCODE_LOG_STACK = false
 # automatic
 %F = $(notdir $%)
 # environment
-VSCODE_CODE_CACHE_PATH = /home/phirun/.config/Code/CachedData/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5
+VSCODE_CODE_CACHE_PATH = /home/phirun/.config/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.I26GN1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.B1MTN1
 # default
 .LOADED := 
 # default
@@ -107,7 +107,7 @@ SNAP_REEXEC =
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 3721
+VSCODE_PID = 57615
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -115,7 +115,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/phirun-VirtualBox:@/tmp/.ICE-unix/2018,unix/phirun-VirtualBox:/tmp/.ICE-unix/2018
+SESSION_MANAGER = local/phirun-VirtualBox:@/tmp/.ICE-unix/2133,unix/phirun-VirtualBox:/tmp/.ICE-unix/2133
 # automatic
 *F = $(notdir $*)
 # environment
@@ -161,11 +161,11 @@ SNAP_USER_COMMON = /home/phirun/snap/code/common
 # environment
 LC_TIME = th_TH.UTF-8
 # environment
-SNAP = /snap/code/97
+SNAP = /snap/code/98
 # environment
-INVOCATION_ID = bbf9697ceb5d4a81b249084cad4e81fe
+INVOCATION_ID = 46b64222a5e848498e66a111a3bf5cea
 # environment
-SNAP_REVISION = 97
+SNAP_REVISION = 98
 # environment
 SNAP_REAL_HOME = /home/phirun
 # environment
@@ -201,7 +201,7 @@ SNAP_ARCH = amd64
 # makefile
 .DEFAULT_GOAL := run
 # environment
-SYSTEMD_EXEC_PID = 2053
+SYSTEMD_EXEC_PID = 2158
 # environment
 DISPLAY = :0
 # environment
@@ -213,17 +213,17 @@ MAKE_VERSION := 4.3
 # environment
 DISABLE_WAYLAND = 1
 # environment
-SNAP_DATA = /var/snap/code/97
+SNAP_DATA = /var/snap/code/98
 # environment
 SNAP_CONTEXT = ulez_xSVBNez6ShiJTAQ92DppMRAuH846zK6YqrnKYu9PEtmCI8A
 # environment
-MANAGERPID = 1876
+MANAGERPID = 1992
 # environment
 LC_MEASUREMENT = th_TH.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 3676
+GIO_LAUNCHED_DESKTOP_FILE_PID = 57565
 # environment
-_ = /snap/code/97/usr/share/code/code
+_ = /snap/code/98/usr/share/code/code
 # environment
 LC_PAPER = th_TH.UTF-8
 # environment
@@ -231,7 +231,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/phirun/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:24086
+JOURNAL_STREAM = 8:28074
 # environment
 GOMODCACHE = /home/phirun/go/pkg/mod
 # environment
@@ -245,11 +245,11 @@ QT_IM_MODULE = ibus
 # environment
 ELECTRON_RUN_AS_NODE = 1
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-66185a60-1.67.2-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-66185a60-1.68.0-main.sock
 # environment
 SNAP_NAME = code
 # environment
-GSETTINGS_SCHEMA_DIR = /snap/code/97/usr/share/glib-2.0/schemas
+GSETTINGS_SCHEMA_DIR = /snap/code/98/usr/share/glib-2.0/schemas
 # environment
 IM_CONFIG_PHASE = 1
 # environment
@@ -259,7 +259,7 @@ GOPROXY = https://proxy.golang.org,direct
 # automatic
 <F = $(notdir $<)
 # environment
-SNAP_VERSION = c3511e6c
+SNAP_VERSION = 4af164ea
 # default
 SUFFIXES := 
 # environment
@@ -271,7 +271,7 @@ SNAP_COMMON = /var/snap/code/common
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SNAP_USER_DATA = /home/phirun/snap/code/97
+SNAP_USER_DATA = /home/phirun/snap/code/98
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -280,6 +280,7 @@ GDMSESSION = ubuntu
 LC_IDENTIFICATION = th_TH.UTF-8
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
+ 
 # variable set hash-table stats:
 # Load=134/1024=13%, Rehash=0, Collisions=6/164=4%
 
@@ -311,6 +312,7 @@ server:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 15):
+ 
 	go run main.go
 
 # Not a target:
@@ -369,6 +371,6 @@ gen:
 # strcache performance: lookups = 32 / hit rate = 28%
 # hash-table stats:
 # Load=23/8192=0%, Rehash=0, Collisions=0/32=0%
-# Finished Make data base on Mon Jun 13 08:17:29 2022
+# Finished Make data base on Tue Jun 14 12:57:01 2022
 
  

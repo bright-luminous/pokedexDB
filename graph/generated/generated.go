@@ -45,6 +45,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		CreatePokemon    func(childComplexity int, input model.PokemonCreateInput) int
+		CreateTable      func(childComplexity int) int
 		DeleteAllPokemon func(childComplexity int) int
 		DeletePokemon    func(childComplexity int, input model.DeleteIDInput) int
 		UpdatePokemon    func(childComplexity int, input model.PokemonUpdateInput) int
@@ -68,6 +69,7 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
+	CreateTable(ctx context.Context) (*model.Pokemon, error)
 	CreatePokemon(ctx context.Context, input model.PokemonCreateInput) (*model.Pokemon, error)
 	UpdatePokemon(ctx context.Context, input model.PokemonUpdateInput) ([]*model.Pokemon, error)
 	UpdatePokemonMap(ctx context.Context, input model.PokemonMapUpdateInput) ([]*model.Pokemon, error)
@@ -106,6 +108,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreatePokemon(childComplexity, args["input"].(model.PokemonCreateInput)), true
+
+	case "Mutation.CreateTable":
+		if e.complexity.Mutation.CreateTable == nil {
+			break
+		}
+
+		return e.complexity.Mutation.CreateTable(childComplexity), true
 
 	case "Mutation.DeleteAllPokemon":
 		if e.complexity.Mutation.DeleteAllPokemon == nil {
@@ -310,6 +319,8 @@ type Pokemon {
 	Abilities: [String!]!
 }
 type Mutation {
+	CreateTable: Pokemon
+
   CreatePokemon(input: PokemonCreateInput!): Pokemon!
   UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
   UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
@@ -531,6 +542,61 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 // endregion ************************** directives.gotpl **************************
 
 // region    **************************** field.gotpl *****************************
+
+func (ec *executionContext) _Mutation_CreateTable(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_CreateTable(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateTable(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Pokemon)
+	fc.Result = res
+	return ec.marshalOPokemon2ᚖgithubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemon(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_CreateTable(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "ID":
+				return ec.fieldContext_Pokemon_ID(ctx, field)
+			case "Name":
+				return ec.fieldContext_Pokemon_Name(ctx, field)
+			case "Description":
+				return ec.fieldContext_Pokemon_Description(ctx, field)
+			case "Category":
+				return ec.fieldContext_Pokemon_Category(ctx, field)
+			case "Type":
+				return ec.fieldContext_Pokemon_Type(ctx, field)
+			case "Abilities":
+				return ec.fieldContext_Pokemon_Abilities(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Pokemon", field.Name)
+		},
+	}
+	return fc, nil
+}
 
 func (ec *executionContext) _Mutation_CreatePokemon(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_CreatePokemon(ctx, field)
@@ -3422,6 +3488,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "CreateTable":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_CreateTable(ctx, field)
+			})
+
 		case "CreatePokemon":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -4420,6 +4492,13 @@ func (ec *executionContext) marshalOPokemon2ᚕᚖgithubᚗcomᚋbrightᚑlumino
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOPokemon2ᚖgithubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemon(ctx context.Context, sel ast.SelectionSet, v *model.Pokemon) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Pokemon(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
