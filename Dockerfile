@@ -3,16 +3,13 @@ FROM golang:latest
 RUN mkdir /build
 WORKDIR /build
 
-COPY go.mod go.sum ./
+RUN export GO111MODULE=on
+COPY . /build
 RUN go mod download && go mod verify
 
-RUN export GO111MODULE=on
-RUN cd /build && git clone --branch postgresDB https://github.com/bright-luminous/pokedexDB.git
-
-RUN cd /build/pokedexDB && go build
+RUN cd /build && go build
 
 EXPOSE 8080
 
-RUN cd /build/pokedexDB && ls
 
-ENTRYPOINT [ "/build/pokedexDB/pokedexDB" ]
+ENTRYPOINT [ "/build/pokedexDB" ]
