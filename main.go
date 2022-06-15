@@ -18,7 +18,7 @@ import (
 func main() {
 	r := chi.NewRouter()
 
-	var host string = "postgreSQL_1"
+	var host string = "0.0.0.0"
 	var port string = "5432"
 	var user string = "postgres"
 	var password string = os.Getenv("POSTGRES_PASSWORD")
