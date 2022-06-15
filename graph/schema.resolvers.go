@@ -30,6 +30,11 @@ func (r *mutationResolver) UpdatePokemon(ctx context.Context, input model.Pokemo
 	return result, err
 }
 
+func (r *mutationResolver) UpdatePokemonAbility(ctx context.Context, input model.PokemonUpdateAbilityInput) ([]*model.Pokemon, error) {
+	result, err := r.DB.PokeUpdateAbility(ctx, input.ID, input.NewAbility)
+	return result, err
+}
+
 func (r *mutationResolver) UpdatePokemonMap(ctx context.Context, input model.PokemonMapUpdateInput) ([]*model.Pokemon, error) {
 	result, err := r.DB.PokeUpdateMulti(ctx, model.Pokemon(input))
 	return result, err

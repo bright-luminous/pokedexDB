@@ -17,6 +17,7 @@ type Mutation {
 
   CreatePokemon(input: PokemonCreateInput!): Pokemon!
   UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
+  UpdatePokemonAbility(input: PokemonUpdateAbilityInput!): [Pokemon!]
   UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
 
   DeletePokemon(input: DeleteIDInput!): [Pokemon!]
@@ -72,6 +73,11 @@ input PokemonUpdateInput {
   ID: ID!
 	UpdateKey: FieldAvailable!
 	UpdateVal: String!
+}
+
+input PokemonUpdateAbilityInput {
+  ID: ID!
+	NewAbility: [String!]!
 }
 
 input PokemonMapUpdateInput {

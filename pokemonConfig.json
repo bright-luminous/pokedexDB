@@ -1,0 +1,10 @@
+{
+"connectionDetail":{
+  "host": "postgreSQL",
+  "port": "5432",
+  "user": "postgres",
+  "password": "Eauu0244",
+  "dbname": "postgres",
+  "goChiPort": "8081"
+  }
+}

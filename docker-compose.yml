@@ -5,7 +5,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=Eauu0244
     ports:
-      - 8080:8080
+      - 8080:8081
     networks:
       - pokedexNet
   postgreSQL:

@@ -39,6 +39,11 @@ type PokemonMapUpdateInput struct {
 	Abilities   []string    `json:"Abilities"`
 }
 
+type PokemonUpdateAbilityInput struct {
+	ID         string   `json:"ID"`
+	NewAbility []string `json:"NewAbility"`
+}
+
 type PokemonUpdateInput struct {
 	ID        string         `json:"ID"`
 	UpdateKey FieldAvailable `json:"UpdateKey"`

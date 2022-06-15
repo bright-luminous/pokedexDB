@@ -13,17 +13,27 @@ import (
 	"github.com/bright-luminous/pokedexDB/resource"
 	"github.com/go-chi/chi"
 	_ "github.com/lib/pq"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	r := chi.NewRouter()
 
-	var host string = "postgreSQL"
-	var port string = "5432"
-	var user string = "postgres"
-	var password string = os.Getenv("POSTGRES_PASSWORD")
-	var dbname string = "postgres"
-	var goChiPort string = "8080"
+	viper.SetConfigName("pokemonConfig")
+	viper.SetConfigType("json")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	var host string = viper.GetString("connectionDetail.host")
+	var port string = viper.GetString("connectionDetail.port")
+	var user string = viper.GetString("connectionDetail.user")
+	var password string = viper.GetString("connectionDetail.password")
+	var dbname string = viper.GetString("connectionDetail.dbname")
+	var goChiPort string = viper.GetString("connectionDetail.goChiPort")
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",

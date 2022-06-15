@@ -44,12 +44,13 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		CreatePokemon    func(childComplexity int, input model.PokemonCreateInput) int
-		CreateTable      func(childComplexity int) int
-		DeleteAllPokemon func(childComplexity int) int
-		DeletePokemon    func(childComplexity int, input model.DeleteIDInput) int
-		UpdatePokemon    func(childComplexity int, input model.PokemonUpdateInput) int
-		UpdatePokemonMap func(childComplexity int, input model.PokemonMapUpdateInput) int
+		CreatePokemon        func(childComplexity int, input model.PokemonCreateInput) int
+		CreateTable          func(childComplexity int) int
+		DeleteAllPokemon     func(childComplexity int) int
+		DeletePokemon        func(childComplexity int, input model.DeleteIDInput) int
+		UpdatePokemon        func(childComplexity int, input model.PokemonUpdateInput) int
+		UpdatePokemonAbility func(childComplexity int, input model.PokemonUpdateAbilityInput) int
+		UpdatePokemonMap     func(childComplexity int, input model.PokemonMapUpdateInput) int
 	}
 
 	Pokemon struct {
@@ -72,6 +73,7 @@ type MutationResolver interface {
 	CreateTable(ctx context.Context) (*model.Pokemon, error)
 	CreatePokemon(ctx context.Context, input model.PokemonCreateInput) (*model.Pokemon, error)
 	UpdatePokemon(ctx context.Context, input model.PokemonUpdateInput) ([]*model.Pokemon, error)
+	UpdatePokemonAbility(ctx context.Context, input model.PokemonUpdateAbilityInput) ([]*model.Pokemon, error)
 	UpdatePokemonMap(ctx context.Context, input model.PokemonMapUpdateInput) ([]*model.Pokemon, error)
 	DeletePokemon(ctx context.Context, input model.DeleteIDInput) ([]*model.Pokemon, error)
 	DeleteAllPokemon(ctx context.Context) ([]*model.Pokemon, error)
@@ -146,6 +148,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdatePokemon(childComplexity, args["input"].(model.PokemonUpdateInput)), true
+
+	case "Mutation.UpdatePokemonAbility":
+		if e.complexity.Mutation.UpdatePokemonAbility == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdatePokemonAbility_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdatePokemonAbility(childComplexity, args["input"].(model.PokemonUpdateAbilityInput)), true
 
 	case "Mutation.UpdatePokemonMap":
 		if e.complexity.Mutation.UpdatePokemonMap == nil {
@@ -243,6 +257,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputDeleteIDInput,
 		ec.unmarshalInputPokemonCreateInput,
 		ec.unmarshalInputPokemonMapUpdateInput,
+		ec.unmarshalInputPokemonUpdateAbilityInput,
 		ec.unmarshalInputPokemonUpdateInput,
 	)
 	first := true
@@ -323,6 +338,7 @@ type Mutation {
 
   CreatePokemon(input: PokemonCreateInput!): Pokemon!
   UpdatePokemon(input: PokemonUpdateInput!): [Pokemon!]
+  UpdatePokemonAbility(input: PokemonUpdateAbilityInput!): [Pokemon!]
   UpdatePokemonMap(input: PokemonMapUpdateInput!): [Pokemon!]
 
   DeletePokemon(input: DeleteIDInput!): [Pokemon!]
@@ -380,6 +396,11 @@ input PokemonUpdateInput {
 	UpdateVal: String!
 }
 
+input PokemonUpdateAbilityInput {
+  ID: ID!
+	NewAbility: [String!]!
+}
+
 input PokemonMapUpdateInput {
   ID: ID!
 	Name: String!
@@ -422,6 +443,21 @@ func (ec *executionContext) field_Mutation_DeletePokemon_args(ctx context.Contex
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNDeleteIDInput2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐDeleteIDInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_UpdatePokemonAbility_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.PokemonUpdateAbilityInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNPokemonUpdateAbilityInput2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonUpdateAbilityInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -727,6 +763,72 @@ func (ec *executionContext) fieldContext_Mutation_UpdatePokemon(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_UpdatePokemon_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_UpdatePokemonAbility(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdatePokemonAbility(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdatePokemonAbility(rctx, fc.Args["input"].(model.PokemonUpdateAbilityInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Pokemon)
+	fc.Result = res
+	return ec.marshalOPokemon2ᚕᚖgithubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_UpdatePokemonAbility(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "ID":
+				return ec.fieldContext_Pokemon_ID(ctx, field)
+			case "Name":
+				return ec.fieldContext_Pokemon_Name(ctx, field)
+			case "Description":
+				return ec.fieldContext_Pokemon_Description(ctx, field)
+			case "Category":
+				return ec.fieldContext_Pokemon_Category(ctx, field)
+			case "Type":
+				return ec.fieldContext_Pokemon_Type(ctx, field)
+			case "Abilities":
+				return ec.fieldContext_Pokemon_Abilities(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Pokemon", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_UpdatePokemonAbility_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -3422,6 +3524,37 @@ func (ec *executionContext) unmarshalInputPokemonMapUpdateInput(ctx context.Cont
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputPokemonUpdateAbilityInput(ctx context.Context, obj interface{}) (model.PokemonUpdateAbilityInput, error) {
+	var it model.PokemonUpdateAbilityInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "ID":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ID"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "NewAbility":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("NewAbility"))
+			it.NewAbility, err = ec.unmarshalNString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputPokemonUpdateInput(ctx context.Context, obj interface{}) (model.PokemonUpdateInput, error) {
 	var it model.PokemonUpdateInput
 	asMap := map[string]interface{}{}
@@ -3507,6 +3640,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_UpdatePokemon(ctx, field)
+			})
+
+		case "UpdatePokemonAbility":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_UpdatePokemonAbility(ctx, field)
 			})
 
 		case "UpdatePokemonMap":
@@ -4087,6 +4226,11 @@ func (ec *executionContext) unmarshalNPokemonCreateInput2githubᚗcomᚋbright�
 
 func (ec *executionContext) unmarshalNPokemonMapUpdateInput2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonMapUpdateInput(ctx context.Context, v interface{}) (model.PokemonMapUpdateInput, error) {
 	res, err := ec.unmarshalInputPokemonMapUpdateInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNPokemonUpdateAbilityInput2githubᚗcomᚋbrightᚑluminousᚋpokedexDBᚋgraphᚋmodelᚐPokemonUpdateAbilityInput(ctx context.Context, v interface{}) (model.PokemonUpdateAbilityInput, error) {
+	res, err := ec.unmarshalInputPokemonUpdateAbilityInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

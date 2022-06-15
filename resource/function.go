@@ -3,6 +3,7 @@ package resource
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/bright-luminous/pokedexDB/graph/model"
@@ -20,8 +21,9 @@ func PrintIfErrorExist(err error) {
 	}
 }
 
-func CheckPokeType(inStr string) model.PokemonType {
+func CheckPokeType(inStr string) (model.PokemonType, error) {
 	var typeTobeReturn model.PokemonType
+	var err error
 	for _, v := range model.AllPokemonType {
 		if string(v) == inStr {
 			fmt.Println(v)
@@ -29,9 +31,9 @@ func CheckPokeType(inStr string) model.PokemonType {
 		}
 	}
 	if typeTobeReturn == "" {
-		fmt.Println("wrong type")
+		return "", errors.New("wrong type")
 	}
-	return typeTobeReturn
+	return typeTobeReturn, err
 }
 
 func NewPokemonSQLiteOperation(dbName string) (*PokemonSQLop, error) {
@@ -81,12 +83,31 @@ func (op *PokemonSQLop) PokeCreate(ctx context.Context, pokeInput *model.Pokemon
 func (op *PokemonSQLop) PokeUpdate(ctx context.Context, ID string, updateField model.FieldAvailable, updateVal string) ([]*model.Pokemon, error) {
 	var err error
 	if updateField == "Type" {
-		newType := CheckPokeType(updateVal)
+		newType, err := CheckPokeType(updateVal)
+		if err != nil {
+			return []*model.Pokemon(nil), err
+		}
 		_, err = op.db.NewUpdate().Model(op.modelToUse).Set("Type= ?", newType).Where("id = ?", ID).Exec(ctx)
+		if err != nil {
+			return []*model.Pokemon(nil), err
+		}
 	} else {
-		_, err = op.db.NewUpdate().Model(op.modelToUse).Set("?= ?", updateField, updateVal).Where("id = ?", ID).Exec(ctx)
+		tobeQuery := fmt.Sprintf("%s= '%s'", updateField, updateVal)
+		fmt.Println(tobeQuery)
+		_, err = op.db.NewUpdate().Model(op.modelToUse).Set(tobeQuery).Where("id = ?", ID).Exec(ctx)
+		if err != nil {
+			return []*model.Pokemon(nil), err
+		}
 	}
-	PrintIfErrorExist(err)
+	resultPokemon, err := op.PokeFindByID(ctx, ID)
+	return resultPokemon, err
+}
+
+func (op *PokemonSQLop) PokeUpdateAbility(ctx context.Context, ID string, newAbility []string) ([]*model.Pokemon, error) {
+	_, err := op.db.NewUpdate().Model(op.modelToUse).Set("Abilities= ?", newAbility).Where("id = ?", ID).Exec(ctx)
+	if err != nil {
+		return []*model.Pokemon(nil), err
+	}
 	resultPokemon, err := op.PokeFindByID(ctx, ID)
 	return resultPokemon, err
 }

@@ -18,6 +18,7 @@ type DatabaseOp interface {
 
 	PokeCreate(ctx context.Context, pokeInput *model.PokemonCreateInput) (*model.Pokemon, error)
 	PokeUpdate(ctx context.Context, ID string, updateField model.FieldAvailable, updateVal string) ([]*model.Pokemon, error)
+	PokeUpdateAbility(ctx context.Context, ID string, newAbility []string) ([]*model.Pokemon, error)
 	PokeUpdateMulti(ctx context.Context, updateInput model.Pokemon) ([]*model.Pokemon, error)
 	PokeDelete(ctx context.Context, ID string) ([]*model.Pokemon, error)
 	PokeDeleteAll(ctx context.Context) ([]*model.Pokemon, error)
