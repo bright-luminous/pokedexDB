@@ -15,7 +15,7 @@ server:
 	go run main.go
 
 dockerBuild:
-	docker build -t pokedex-app .
+	docker build -t pokedex-app:v0.1 .
 
 dockerDexRun:
-	docker run -p 8080:8080 -tid pokedex-app
+	docker run --name pokedex -p 8080:8080 -tid pokedex-app:v0.1

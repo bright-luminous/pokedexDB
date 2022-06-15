@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jun 14 12:57:01 2022
+# Make data base, printed on Wed Jun 15 07:47:34 2022
 
 # Variables
 
@@ -25,7 +25,7 @@ SNAP_INSTANCE_KEY =
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-225cb9d0-9835-4b8d-8fce-0f84c5be04ad.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-c43a8b61-a943-49f3-a3d7-ed8de08dce2e.sock
 # environment
 LC_NAME = th_TH.UTF-8
 # environment
@@ -67,7 +67,7 @@ VSCODE_CODE_CACHE_PATH = /home/phirun/.config/Code/CachedData/4af164ea3a06f701fe
 # environment
 LANG = C
 # environment
-XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.B1MTN1
+XAUTHORITY = /run/user/1000/.mutter-Xwaylandauth.QGBMN1
 # default
 .LOADED := 
 # default
@@ -107,7 +107,7 @@ SNAP_REEXEC =
 # environment
 VSCODE_VERBOSE_LOGGING = true
 # environment
-VSCODE_PID = 57615
+VSCODE_PID = 3600
 # environment
 XDG_SESSION_TYPE = wayland
 # automatic
@@ -115,7 +115,7 @@ XDG_SESSION_TYPE = wayland
 # environment
 BAMF_DESKTOP_FILE_HINT = /var/lib/snapd/desktop/applications/code_code.desktop
 # environment
-SESSION_MANAGER = local/phirun-VirtualBox:@/tmp/.ICE-unix/2133,unix/phirun-VirtualBox:/tmp/.ICE-unix/2133
+SESSION_MANAGER = local/phirun-VirtualBox:@/tmp/.ICE-unix/2178,unix/phirun-VirtualBox:/tmp/.ICE-unix/2178
 # automatic
 *F = $(notdir $*)
 # environment
@@ -163,7 +163,7 @@ LC_TIME = th_TH.UTF-8
 # environment
 SNAP = /snap/code/98
 # environment
-INVOCATION_ID = 46b64222a5e848498e66a111a3bf5cea
+INVOCATION_ID = 66925aac3b7d424cba81578de273505d
 # environment
 SNAP_REVISION = 98
 # environment
@@ -201,7 +201,7 @@ SNAP_ARCH = amd64
 # makefile
 .DEFAULT_GOAL := run
 # environment
-SYSTEMD_EXEC_PID = 2158
+SYSTEMD_EXEC_PID = 2206
 # environment
 DISPLAY = :0
 # environment
@@ -217,11 +217,11 @@ SNAP_DATA = /var/snap/code/98
 # environment
 SNAP_CONTEXT = ulez_xSVBNez6ShiJTAQ92DppMRAuH846zK6YqrnKYu9PEtmCI8A
 # environment
-MANAGERPID = 1992
+MANAGERPID = 2037
 # environment
 LC_MEASUREMENT = th_TH.UTF-8
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 57565
+GIO_LAUNCHED_DESKTOP_FILE_PID = 3549
 # environment
 _ = /snap/code/98/usr/share/code/code
 # environment
@@ -231,7 +231,7 @@ XDG_RUNTIME_DIR = /run/user/1000
 # environment
 GDK_PIXBUF_MODULE_FILE = /home/phirun/snap/code/common/.cache/gdk-pixbuf-loaders.cache
 # environment
-JOURNAL_STREAM = 8:28074
+JOURNAL_STREAM = 8:29816
 # environment
 GOMODCACHE = /home/phirun/go/pkg/mod
 # environment
@@ -280,8 +280,8 @@ GDMSESSION = ubuntu
 LC_IDENTIFICATION = th_TH.UTF-8
 # environment
 SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd/void
- 
 # variable set hash-table stats:
+ 
 # Load=134/1024=13%, Rehash=0, Collisions=6/164=4%
 
 # Pattern-specific Variable Values
@@ -290,9 +290,9 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 
 # Directories
 
-# . (device 2051, inode 2497303): 13 files, no impossibilities.
+# . (device 2051, inode 2497303): 14 files, no impossibilities.
 
-# 13 files, no impossibilities in 1 directories.
+# 14 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -300,10 +300,24 @@ SNAP_LIBRARY_PATH = /var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32:/var/lib/snapd
 
 # Files
 
+dockerDexRun:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 21):
+	docker run -p 8080:8080 -tid pokedex-app
+
+dockerBuild:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 18):
+	docker build -t pokedex-app .
+
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-09 15:56:57.304681146
+#  Last modified 2022-06-14 15:53:36.480721862
 #  File has been updated.
 #  Successfully updated.
 
@@ -312,7 +326,6 @@ server:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 15):
- 
 	go run main.go
 
 # Not a target:
@@ -358,19 +371,19 @@ gen:
 	go run github.com/99designs/gqlgen generate
 
 # files hash-table stats:
-# Load=9/1024=1%, Rehash=0, Collisions=0/19=0%
+# Load=11/1024=1%, Rehash=0, Collisions=0/21=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 23 / storage = 175 B / avg = 7 B
-# current buf: size = 8162 B / used = 175 B / count = 23 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 211 B / avg = 8 B
+# current buf: size = 8162 B / used = 211 B / count = 26 / avg = 8 B
 
-# strcache performance: lookups = 32 / hit rate = 28%
+# strcache performance: lookups = 37 / hit rate = 29%
 # hash-table stats:
-# Load=23/8192=0%, Rehash=0, Collisions=0/32=0%
-# Finished Make data base on Tue Jun 14 12:57:01 2022
+# Load=26/8192=0%, Rehash=0, Collisions=0/37=0%
+# Finished Make data base on Wed Jun 15 07:47:34 2022
 
  
